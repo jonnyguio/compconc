@@ -1,0 +1,38 @@
+﻿Nome:         João Luis da Silva Guio Soares
+DRE:        114.094.151
+
+
+Soma sequencial:         soma o vetor na ordem sequencial (0, 1, 2, 3… N)
+Soma sequencial2:        soma o vetor na ordem concorrente (0, 2, 4… N) + (1, 3, 5, … N-1)
+
+
+./a.out 2 data/f1
+
+
+Soma concorrente:         49869.394531
+Soma sequencial:         49869.449219
+Soma sequencial2:         49869.394531
+
+
+./a.out 2 data/f10
+
+
+Soma concorrente:         501552.937500
+Soma sequencial:         501553.343750
+Soma sequencial2:         501552.937500
+
+
+./a.out 2 data/f100
+
+
+Soma concorrente:         5006394.000000
+Soma sequencial:         5006348.000000
+Soma sequencial2:         5006394.000000
+
+
+./a.out 2 data/f1000
+
+
+Soma concorrente:         49969192.000000
+Soma sequencial:         49968956.000000
+Soma sequencial2:         49969192.000000
