@@ -1,25 +1,23 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <pthread.h>
+#include <math.h>
 
-int main () {
-    int i, *idThread;
-    float sum = 0, sumSeq, sumSeq2;
-    pthread_t *threads;
+int main (int argc, char *argv[]) {
+    int i, n;
+    double pi = 4, sum = 0;
 
-    if (argc < 3) {
-        printf("ERROR. Use <number of threads> <file>.\n");
+    if (argc < 2) {
+        printf("ERROR. Use <N>.\n");
         exit(1);
     }
+    n = atoi(argv[1]);
 
-    freopen(argv[2], "r", stdin);
-    scanf("%d", &tamVec);
-    vec = malloc(sizeof(float) * tamVec);
-    for (i = 0; i < tamVec; i++) {
-        scanf("%f", vec + i);
+    for (i = 1; i <= n; i++) {
+        sum += (1 / ((double)i * 2 - 1)) * ((i & 1) ? 1 : -1);
     }
+    pi *= sum;
+    printf("PI: %.20lf\tM_PI: %.20lf\n", pi, M_PI);
 
-    nThread = atoi(argv[1]);
-    vecAns = (float *) malloc(sizeof(float) * nThread);
-    threads = (pthread_t *) malloc(sizeof(pthread_t) * nThread);
+    return 0;
 }
