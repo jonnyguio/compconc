@@ -1,0 +1,34 @@
+10^3
+
+    Tempo concorrente: 0.0004358292s
+    Tempo sequencial: 0.0000169277s
+
+10^4
+
+    Tempo concorrente: 0.0004878044s
+    Tempo sequencial: 0.0001580715s
+
+10^5
+
+    Tempo concorrente: 0.0011949539s
+    Tempo sequencial: 0.0015878677s
+
+10^6
+
+    Tempo concorrente: 0.0062389374s
+    Tempo sequencial: 0.0126650333s
+
+10^7
+
+    Tempo concorrente: 0.0447049141s
+    Tempo sequencial: 0.0711898804s
+
+10^8
+
+    Tempo concorrente: 0.3645601273s
+    Tempo sequencial: 0.7033159733s
+
+10^9
+
+    Tempo concorrente: 3.5655457973s
+    Tempo sequencial: 6.9364120960s
