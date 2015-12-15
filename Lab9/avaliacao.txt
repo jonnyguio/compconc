@@ -1,0 +1,5 @@
+Avaliação:
+
+    Na questão 1, podemos observar um comportamente caótico do sistema, pois não há nenhuma garantia de que o que está sendo lido foi modificado, já que não há ordem de prioridade e as threads apenas "tentam executar". Dependendo da ordem, pode ocorrer das threads de leituras ficarem muito tempo lendo os mesmo valores, já que não há garantia de que o lock da segunda thread será liberado.
+
+    Na questão 2, por garantir que é avaliado se um escritor entrou numa "fila de espera", a thread de leitura tem que esperar agora que não há nenhuma thread de escrita querendo escrever e nem escrevendo, garantindo que ocorra menos starvation dos escritores.
