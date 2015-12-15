@@ -4,7 +4,7 @@
 #include <math.h>
 
 #define SIZE 5
-#define NTHREADS_SIZE 2
+#define NTHREADS_SIZE 4
 
 pthread_mutex_t theMutex;
 pthread_cond_t theCond;
@@ -32,15 +32,22 @@ void printBuf(buffer *buf) {
 }
 
 int main(int argc, char const *argv[]) {
-    int i;
+    int i, *id;
+
     pthread_t threads[NTHREADS_SIZE];
     beginBuf = NULL;
+    pthread_mutex_init(&theMutex, NULL);
+    pthread_cond_init (&theCond, NULL);
+
     for (i = 0; i < NTHREADS_SIZE; i++) {
-        if (i % 2 == 0) {
-            pthread_create(&threads[i], NULL, producer, NULL);
+        id = (int *) malloc(sizeof(int));
+        if (!i) {
+            *id = i;
+            pthread_create(&threads[i], NULL, producer, (void *) id);
         }
         else {
-            pthread_create(&threads[i], NULL, consumer, NULL);
+            *id = i - 1;
+            pthread_create(&threads[i], NULL, consumer, (void *) id);
         }
     }
     pthread_exit(NULL);
@@ -63,7 +70,7 @@ void insert(n) {
     buffer *aux;
     pthread_mutex_lock(&theMutex);
 
-    if (beginBuf != NULL && getSize(beginBuf) > SIZE) {
+    while (getSize(beginBuf) > SIZE) {
         pthread_cond_wait(&theCond, &theMutex);
     }
 
@@ -73,8 +80,13 @@ void insert(n) {
         aux->next->val = n;
         aux->next->next = NULL;
     }
+    else {
+        beginBuf = (buffer *) malloc(sizeof(buffer));
+        beginBuf->next = NULL;
+        beginBuf->val = n;
+    }
 
-    printBuf(beginBuf);
+    //printBuf(beginBuf);
 
     pthread_cond_signal(&theCond);
     pthread_mutex_unlock(&theMutex);
@@ -85,10 +97,8 @@ int get() {
     buffer *aux;
 
     pthread_mutex_lock(&theMutex);
-    if (beginBuf == NULL || getSize(beginBuf) == 0)
-    {
+    while (getSize(beginBuf) == 0)
         pthread_cond_wait(&theCond, &theMutex);
-    }
     val = beginBuf->val;
     aux = beginBuf->next;
     free(beginBuf);
@@ -101,9 +111,10 @@ int get() {
 }
 
 void* producer(void *args) {
-    int n[3] = {0, 1, 1}, i;
+    int n[3] = {0, 1, 1}, i, *myId;
     insert(n[1]);
     insert(n[2]);
+    myId = (int *) args;
     for (i = 3; i <= 25; i++)
     {
         n[0] = n[1] + n[2];
@@ -112,16 +123,25 @@ void* producer(void *args) {
         n[1] = n[2];
         n[2] = n[0];
     }
+    printf("%d (Producer) - exiting...\n", *myId);
+
+    /*pthread_mutex_lock(&theMutex);
+    pthread_cond_broadcast(&theCond);
+    pthread_mutex_unlock(&theMutex);*/
 
     pthread_exit(NULL);
 }
 
 void* consumer(void *args) {
-    int n, i;
-    for (i = 0; i < 25; i++) {
+    int n, i, *myId;
+    myId = (int *) args;
+    //printf("myId: %d, jump:%d\n", *myId, NTHREADS_SIZE - 1);
+    for (i = *myId; i < 25; i += NTHREADS_SIZE - 1) {
         n = get();
-        printf("isPrime(%d) = %d\n", n, isPrime(n));
+        printf("(%d) - %d: %s\n", i, n, (isPrime(n))?"is prime":"is NOT prime");
     }
+    free(myId);
+    printf("%d (Consumer) - exiting...\n", *myId);
     pthread_exit(NULL);
 }
 
