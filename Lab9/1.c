@@ -1,90 +1,138 @@
+#include <stdio.h>
 #include <pthread.h>
 #include <stdlib.h>
-#include <stdio.h>
-#include <math.h>
 
-#define TIMES 50
-#define NTHREADS_SIZE 4
+#define TIMES 10
 
-pthread_mutex_t theMutex;
-pthread_cond_t theCond;
-
-typedef struct _shared {
-    int counter, id;
+typedef struct _sharedContent {
+    int id, counter;
 } sharedContent;
 
+int nThread, readCount, writeCount, _flagFinished = 0, createdWriters;
 sharedContent shared;
-int nThread, lock = 0;
+
+pthread_mutex_t readersMutex, writersMutex, globalMutex;
+pthread_cond_t theCond;
+
+/*sharedContent read(sharedContent last) {
+    if (last.counter == shared.counter)
+        pthread_cond_wait(&theCond);
+}*/
+
+void* reader(void *args) {
+    int *id;
+    sharedContent local;
+    id = (int *) args;
+    printf("Initializing reader\n");
+
+    while (_flagFinished < nThread / 2) {
+        pthread_mutex_lock(&globalMutex);
+
+        //while (_writing)
+        //    pthread_cond_wait(&theCond, &globalMutex);
+        while (writeCount)
+            pthread_cond_wait(&theCond, &globalMutex);
+        readCount++;
+
+        pthread_mutex_unlock(&globalMutex);
+
+        local.counter = shared.counter;
+        local.id = shared.id;
+
+        pthread_mutex_lock(&globalMutex);
+        readCount--;
+        pthread_cond_broadcast(&theCond);
+        pthread_mutex_unlock(&globalMutex);
+
+        if (local.id != 0) {
+
+            //printf("debugao: %d - %d - %d - %d - %d\n", *id, _writing, writeCount, readCount, createdWriters);
+            printf("(%d) - Id:%d, Counter%d\n", *id, local.id, local.counter);
+
+        }
+    }
+
+    free(id);
+
+    printf(" (reader)bye\n");
+    pthread_exit(NULL);
+}
 
 void* writer(void *args) {
     int i, *id;
     id = (int *) args;
+    printf("Initializing writer\n");
 
-    printf("Starting (writer), id: %d\n", *id);
+    pthread_mutex_lock(&writersMutex);
+    createdWriters++;
+    pthread_mutex_unlock(&writersMutex);
 
-    pthread_cond_wait(&theCond, &theMutex);
+    for (i = 0; i < TIMES; i++) {
+        pthread_mutex_lock(&globalMutex);
+        //_writing++;
+        while (readCount || writeCount) {
+            pthread_cond_wait(&theCond, &globalMutex);
+        }
+        writeCount++;
 
-    for (i = *id; i < TIMES; i += nThread) {
-        pthread_mutex_lock(&theMutex);
-        lock = 0;
         shared.counter++;
         shared.id = *id;
-        pthread_mutex_unlock(&theMutex);
-        lock = 1;
-        printf("%d - %d - %d\n", lock, shared.id, shared.counter);
+
+        writeCount--;
+        //_writing--;
+        pthread_cond_broadcast(&theCond);
+        pthread_mutex_unlock(&globalMutex);
     }
 
-    free(args);
+    _flagFinished++;
 
-    pthread_mutex_lock(&theMutex);
-    lock = -1;
-    pthread_mutex_unlock(&theMutex);
+    pthread_mutex_lock(&writersMutex);
+    createdWriters--;
+    pthread_mutex_unlock(&writersMutex);
+
+    free(id);
+    printf(" (writer)bye\n");
     pthread_exit(NULL);
 }
 
-void* reader(void *args) {
-    int *id;
-    id = (int *) args;
-
-    printf("Starting (reader), id: %d\n", *id);
-
-    while (lock != -1)
-    {
-        printf("tried to read (%d)... ", *id);
-        if (lock <= 0)
-            continue;
-        printf("Im Reading (%d)!: Id: %d - Counter: %d\n", *id, shared.id, shared.counter);
-    }
-    pthread_exit(NULL);
-}
-
-int main(int argc, char const *argv[]) {
+int main(int argc, char *argv[]) {
     int i, *id;
     pthread_t *threads;
 
     if (argc < 2) {
         printf("Usage: <threads>\n");
-        exit(0);
+        exit (1);
     }
-    shared.counter = 0;
-    shared.id = 0;
 
     nThread = atoi(argv[1]);
-    threads = (pthread_t*) malloc(sizeof(pthread_t) * nThread);
+    if (nThread < 4) {
+        printf("Error. Threads must be equal or greater than 4 (>= 4)\n");
+        exit (2);
+    }
 
-    pthread_mutex_init(&theMutex, NULL);
-    pthread_cond_init (&theCond, NULL);
+    pthread_mutex_init(&readersMutex, NULL);
+    pthread_mutex_init(&writersMutex, NULL);
+    pthread_mutex_init(&globalMutex, NULL);
+
+    printf("Threads: %d\n", nThread);
+
+    threads = (pthread_t *) malloc(sizeof(pthread_t) * nThread);
+    shared.counter = 0;
+    readCount = 0;
+    writeCount = 0;
+    //_writing = 0;
+    createdWriters = 0;
 
     for (i = 0; i < nThread; i++) {
         id = (int *) malloc(sizeof(int));
         *id = i + 1;
-        if (i % 2 == 0) {
-            pthread_create(threads + i, NULL, writer, (void *) id);
-        }
-        else {
+        if (i < nThread / 2) {
             pthread_create(threads + i, NULL, reader, (void *) id);
         }
+        else {
+            pthread_create(threads + i, NULL, writer, (void *) id);
+        }
     }
+
     pthread_exit(NULL);
-    return 0;
 }
