@@ -2,14 +2,16 @@
 #include <stdlib.h>
 #include <math.h>
 
+//funções existentes para o cálculo de suas integrais
 double func1(double x){return 1+x;}
 double func2(double x){return pow ((1 - pow((x), 2)), 0.5);}
 double func3(double x){return pow ((1 + pow((x), 4)), 0.5);}
 
+//lista das funções
 double (*funcList[3])(double) = {func1, func2, func3};
 
-
-#define getMiddle(a, b) ((a) + (b)) / 2 //macro apenas para calcular o ponto médio entre duas entradas a e b
+//macro apenas para calcular o ponto médio entre duas entradas a e b
+#define getMiddle(a, b) ((a) + (b)) / 2
 
 double adaptativeQuadrature(double (*func)(double), double a, double b, double err) {
     double m, funcB, funcSleft, funcSright, areaS1, areaS2, areaB;
