@@ -6,13 +6,13 @@ double func1(double x){return 1+x;}
 double func2(double x){return pow ((1 - pow((x), 2)), 0.5);}
 double func3(double x){return pow ((1 + pow((x), 4)), 0.5);}
 
-double (*funcList[3])(int) = {func1, func2, func3};
+double (*funcList[3])(double) = {func1, func2, func3};
 
 //#define func(op, x) ((op) == 'a') ? 1 + (x) : ((op) == 'c') ? pow ((1 + pow((x), 4)), 0.5) : (x > -1 || x < 1) ? pow ((1 - pow((x), 2)), 0.5) : 0
 
 #define getMiddle(a, b) ((a) + (b)) / 2
 
-double adaptativeQuadrature(double (*func)(int), float a, float b, float err) {
+double adaptativeQuadrature(double (*func)(double), double a, double b, double err) {
     double m, funcB, funcSleft, funcSright, areaS1, areaS2, areaB;
     m = getMiddle(a, b);
     funcB = func(m);
@@ -28,7 +28,7 @@ double adaptativeQuadrature(double (*func)(int), float a, float b, float err) {
 }
 
 int main(int argc, char const *argv[]) {
-    float a, b, e;
+    double a, b, e;
     char choice;
     double (*func)(double);
 
