@@ -23,7 +23,7 @@ typedef struct _params {
 pthread_t *threads;
 pthread_mutex_t theMutex;
 
-int instantiate, finished, allinstantiate = 0, nThreads, anyoneFree, anythingSent, doneMath;
+int instantiated, finished, allinstantiated = 0, nThreads, anyoneFree, anythingSent, doneMath;
 double *results, begin, end, globala, globalb;
 
 void *calcIntegral(void *args);
@@ -69,7 +69,7 @@ int main(int argc, char const *argv[]) {
     } while (choice != 'a' && choice != 'b' && choice != 'c') ;
 
     func = funcList[choice-'a'];
-    instantiate = 0;
+    instantiated = 0;
     finished = 0;
     threads = (pthread_t *) malloc(sizeof(pthread_t) * nThreads);
     results = (double *) malloc(sizeof(double) * nThreads);
@@ -84,7 +84,7 @@ int main(int argc, char const *argv[]) {
     input->a = a;
     input->b = b;
     input->func = func;
-    instantiate++;
+    instantiated++;
     pthread_create(&threads[0], NULL, calcIntegral, (void *) input);
 
     pthread_exit(NULL);
@@ -172,25 +172,25 @@ double adaptativeQuadrature(int id, double (*func)(double), double a, double b, 
     // assim, se nem todas as threads foram iniciadas, então iremos iniciar uma nova thread que ficará responsável por um dos retangulos e a thread atual fica responsável apenas pelo outro retangulo.
     // senão, apenas retorna o valor da area do retangulo maior
     if (fabs(areaB - (areaS1 + areaS2)) > err) {
-        if (!allinstantiate) { //mesmo estando fora de um mutex, não há problema por ter uma confirmação dentro.
+        if (!allinstantiated) { //mesmo estando fora de um mutex, não há problema por ter uma confirmação dentro.
             pthread_mutex_lock(&theMutex);
 
-            if (instantiate < nThreads) { // checa se é possível instanciar.
+            if (instantiated < nThreads) { // checa se é possível instanciar.
                 input = (params *) malloc(sizeof(params));
-                input->id = instantiate;
+                input->id = instantiated;
                 input->err = err;
                 input->a = m;
                 input->b = b;
                 input->func = func;
-                pthread_create(&threads[instantiate], NULL, calcIntegral, (void *) input);
-                instantiate++;
+                pthread_create(&threads[instantiated], NULL, calcIntegral, (void *) input);
+                instantiated++;
 
                 pthread_mutex_unlock(&theMutex);
                 areaB = adaptativeQuadrature(id, func, a, m, err);
             }
             else { //se não for, apenas avisa que não é mais possível instanciar e continua a trabalhar normalmente
 
-                allinstantiate = 1;
+                allinstantiated = 1;
                 pthread_mutex_unlock(&theMutex);
                 areaB = adaptativeQuadrature(id, func, a, m, err) + adaptativeQuadrature(id, func, m, b, err);
             }
