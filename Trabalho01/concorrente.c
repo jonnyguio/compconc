@@ -94,8 +94,8 @@ void *calcIntegral(void *args) {
         for (int i = 0; i < nThreads; i++)
             res += results[i];
         GET_TIME(end);
-        printf("Resultado: %.20lf\n", res);
-        printf("Tempo gasto: %lfs\n", end - begin);
+        printf("Approximate value for the integral of f: %.20lf\n", res);
+        printf("Time: %lfs\n", end - begin);
     }
     pthread_mutex_unlock(&theMutex);
 
@@ -113,11 +113,11 @@ double adaptativeQuadrature(int id, double (*func)(double), double a, double b, 
     areaB = (b - a) * funcB;
     areaS1 = (m - a) * funcSleft;
     areaS2 = (b - m) * funcSright;
-    //printf("(%d) %.20lf, %.20lf\n", id, fabs(areaB - (areaS1 + areaS2)), err);
+
     if (fabs(areaB - (areaS1 + areaS2)) > err) {
         if (!allinstantiate) {
             pthread_mutex_lock(&theMutex);
-            //printf("(%d) peguei o loki - %d < %d\n", id, instantiate, nThreads);
+
             if (instantiate < nThreads) {
                 input = (params *) malloc(sizeof(params));
                 input->id = instantiate;
@@ -127,12 +127,12 @@ double adaptativeQuadrature(int id, double (*func)(double), double a, double b, 
                 input->func = func;
                 pthread_create(&threads[instantiate], NULL, calcIntegral, (void *) input);
                 instantiate++;
-                //printf("(%d) deixei aqui\n", id);
+
                 pthread_mutex_unlock(&theMutex);
                 areaB = adaptativeQuadrature(id, func, a, m, err);
             }
             else {
-                //printf("(%d) deixei aqui2\n", id);
+                
                 allinstantiate = 1;
                 pthread_mutex_unlock(&theMutex);
                 areaB = adaptativeQuadrature(id, func, a, m, err) + adaptativeQuadrature(id, func, m, b, err);

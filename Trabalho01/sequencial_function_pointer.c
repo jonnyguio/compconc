@@ -3,18 +3,25 @@
 #include <math.h>
 #include "../timer.h"
 
+//funções existentes para o cálculo de suas integrais
 double func1(double x){return 1+x;}
 double func2(double x){return pow ((1 - pow((x), 2)), 0.5);}
 double func3(double x){return pow ((1 + pow((x), 4)), 0.5);}
 
-double (*funcList[3])(double) = {func1, func2, func3};
+//lista das funções
+double (*funcList[3])(double) = {func1, func2, func3};\
 
-//#define func(op, x) ((op) == 'a') ? 1 + (x) : ((op) == 'c') ? pow ((1 + pow((x), 4)), 0.5) : (x > -1 || x < 1) ? pow ((1 - pow((x), 2)), 0.5) : 0
-
+//macro apenas para calcular o ponto médio entre duas entradas a e b
 #define getMiddle(a, b) ((a) + (b)) / 2
 
 double adaptativeQuadrature(double (*func)(double), double a, double b, double err) {
     double m, funcB, funcSleft, funcSright, areaS1, areaS2, areaB;
+    /*
+    funcB, funcSleft, funcSright: alturas dos retangulos, calculado a partir do ponto médio entre cada um dos retangulos.
+    areaB: area do retangulo maior (b - a) * funcB
+    areaS1, areaS2: area dos retangulos menores (m - a) * funcSleft e (b - m) * funcSright
+    (left e right indicam apenas se está a esquerda ou direita do ponto médio)
+    */
     m = getMiddle(a, b);
     funcB = func(m);
     funcSleft = func(getMiddle(a, m));
@@ -22,15 +29,19 @@ double adaptativeQuadrature(double (*func)(double), double a, double b, double e
     areaB = (b - a) * funcB;
     areaS1 = (m - a) * funcSleft;
     areaS2 = (b - m) * funcSright;
-    //printf("%.20lf, %.20lf\n", fabs(areaB - (areaS1 + areaS2)), err);
+    // agora, se o módulo da diferença entre a area do retangulo maior e da soma dos retangulos menores for maior que o erro máximo, calcula a área dos dois intervalos [a,m], [b,m]
+    // senão, apenas retorna o valor da area do retangulo maior
     if (fabs(areaB - (areaS1 + areaS2)) > err) {
-        areaB = adaptativeQuadrature(func, m, b, err) + adaptativeQuadrature(func, a, m, err);
+        // assim, a área nova sera definida pela soma das áreas dos retangulos menores
+        areaB = adaptativeQuadrature(func, a, m, err) + adaptativeQuadrature(func, m, b, err);
     }
     return areaB;
 }
 
 int main(int argc, char const *argv[]) {
     double a, b, e, begin, end;
+    double a, b, e;
+
     char choice;
     double (*func)(double);
 
@@ -38,12 +49,15 @@ int main(int argc, char const *argv[]) {
         printf("Usage: <a (interval min)> <b (interval max)> <e (max error)>\n");
         exit(1);
     }
-    a = atof(argv[1]);
-    b = atof(argv[2]);
-    e = atof(argv[3]);
+    //converte os valores recebidos para double
+    a = strtod(argv[1], NULL);
+    b = strtod(argv[2], NULL);
+    e = strtod(argv[3], NULL);
 
     printf("Choose which function:\n");
     printf("(a) f(x) = 1 + x\n(b) f(x) = √(1 − xˆ2), −1 < x < 1\n(c) f(x) = √(1 + xˆ4)\n");
+
+    // Apenas um loop que força o usuario a escolher uma função que pode ser usada.
     do {
         printf("a b or c: ");
         scanf("%c", &choice);
@@ -56,9 +70,9 @@ int main(int argc, char const *argv[]) {
     func = funcList[choice-'a'];
 
     GET_TIME(begin);
-    printf("Valor aproximado de f: %.20lf\n", adaptativeQuadrature(func, a, b, e));
+    printf("Approximate value for the integral of f from %lf to %lf: %lf\n", a, b, adaptativeQuadrature(func, a, b, e));
     GET_TIME(end);
-    printf("Tempo gasto: %lfs\n", end - begin);
+    printf("Time: %lfs\n", end - begin);
 
     return 0;
 }
