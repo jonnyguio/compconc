@@ -23,8 +23,8 @@ typedef struct _params {
 pthread_t *threads;
 pthread_mutex_t theMutex;
 
-int instantiate, finished, allinstantiate = 0, nThreads;
-double *results, begin, end;
+int instantiate, finished, allinstantiate = 0, nThreads, anyoneFree, anythingSent, doneMath;
+double *results, begin, end, globala, globalb;
 
 void *calcIntegral(void *args);
 double adaptativeQuadrature(int id, double (*func)(double), double a, double b, double err);
@@ -55,6 +55,7 @@ int main(int argc, char const *argv[]) {
     }
 
     pthread_mutex_init(&theMutex, NULL);
+    pthread_cond_init(&theCond, NULL);
 
     printf("Choose which function:\n");
     printf("(a) f(x) = 1 + x\n(b) f(x) = √(1 − xˆ2), −1 < x < 1\n(c) f(x) = √(1 + xˆ4)\n");
@@ -72,6 +73,7 @@ int main(int argc, char const *argv[]) {
     finished = 0;
     threads = (pthread_t *) malloc(sizeof(pthread_t) * nThreads);
     results = (double *) malloc(sizeof(double) * nThreads);
+    doneMath = 0;
 
     //inicia-se então o cálculo do tempo da concorrencia (que inclui criações de threads e suas execuções)
     GET_TIME(begin);
@@ -100,8 +102,42 @@ void *calcIntegral(void *args) {
     results[arguments->id] = adaptativeQuadrature(arguments->id, arguments->func, arguments->a, arguments->b, arguments->err);
 
     pthread_mutex_lock(&theMutex);
-    finished++; // avisa que terminou
-    if (finished == instantiate) {  // quando todas as threads instanciadas terminam, a ultima fica responsável por somar todos os retangulos finais.
+    finished++;
+    printf("(%d) Terminei! Me liberando - %d, %d\n", arguments->id, finished, nThreads);
+    pthread_mutex_unlock(&theMutex);
+    while (finished != nThreads) {
+        pthread_mutex_lock(&theMutex);
+        anyoneFree = arguments->id;
+        //printf("(%d) ocioso... - %d, %d, %d\n", arguments->id, finished, nThreads, finished == nThreads);
+        if (finished != nThreads) {
+            if (anythingSent) {
+                //printf("(%d) peguei coisa\n", arguments->id);
+                finished--;
+                anythingSent = 0;
+                anyoneFree = 0;
+                pthread_cond_broadcast(&theCond);
+                pthread_mutex_unlock(&theMutex);
+                results[arguments->id] += adaptativeQuadrature(arguments->id, arguments->func, globala, globalb, arguments->err);
+                pthread_mutex_lock(&theMutex);
+                finished++;
+                pthread_mutex_unlock(&theMutex);
+            }
+            else {
+                //printf("(%d) aguardando mais coisa pra se fazer\n", arguments->id);
+                pthread_cond_wait(&theCond, &theMutex);
+                pthread_mutex_unlock(&theMutex);
+            }
+        }
+        else {
+            //printf("(%d) na realidade, já acabou\n", arguments->id);
+            pthread_cond_broadcast(&theCond);
+            pthread_mutex_unlock(&theMutex);
+        }
+    }
+    pthread_cond_broadcast(&theCond);
+    pthread_mutex_lock(&theMutex);
+    if (!doneMath) {  // quando todas as threads instanciadas terminam, a ultima fica responsável por somar todos os retangulos finais.
+        doneMath = 1;
         res = 0;
         for (int i = 0; i < nThreads; i++)
             res += results[i];
@@ -159,8 +195,23 @@ double adaptativeQuadrature(int id, double (*func)(double), double a, double b, 
                 areaB = adaptativeQuadrature(id, func, a, m, err) + adaptativeQuadrature(id, func, m, b, err);
             }
         }
-        else
-            areaB = adaptativeQuadrature(id, func, a, m, err) + adaptativeQuadrature(id, func, m, b, err);
+        else {
+            if (anyoneFree) {
+                pthread_mutex_lock(&theMutex);
+                while (anythingSent) {
+                    pthread_cond_wait(&theCond, &theMutex);
+                }
+                globala = m;
+                globalb = b;
+                anythingSent = 1;
+                pthread_cond_broadcast(&theCond);
+                pthread_mutex_unlock(&theMutex);
+                areaB = adaptativeQuadrature(id, func, a, m, err);
+            }
+            else {
+                areaB = adaptativeQuadrature(id, func, a, m, err) + adaptativeQuadrature(id, func, m, b, err);
+            }
+        }
     }
     return areaB;
 }
