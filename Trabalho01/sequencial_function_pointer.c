@@ -27,13 +27,13 @@ double adaptativeQuadrature(double (*func)(double), double a, double b, double e
     funcSleft = func(getMiddle(a, m));
     funcSright = func(getMiddle(m, b));
     areaB = (b - a) * funcB;
-    areaS1 = (m - a) * funcSleft;
-    areaS2 = (b - m) * funcSright;
+    areaS1 = (b - a) / 2 * funcSleft;
+    areaS2 = (b - a) / 2 * funcSright;
     // agora, se o módulo da diferença entre a area do retangulo maior e da soma dos retangulos menores for maior que o erro máximo, calcula a área dos dois intervalos [a,m], [b,m]
     // senão, apenas retorna o valor da area do retangulo maior
-    if (fabs(areaB - (areaS1 + areaS2)) > err) {
+    if ((areaB - (areaS1 + areaS2)) > err || ((areaS1 + areaS2) - areaB) > err) {
         // assim, a área nova sera definida pela soma das áreas dos retangulos menores
-        areaB = adaptativeQuadrature(func, a, m, err) + adaptativeQuadrature(func, m, b, err);
+        return adaptativeQuadrature(func, a, m, err) + adaptativeQuadrature(func, m, b, err);
     }
     return areaB;
 }

@@ -10,6 +10,8 @@ double func3(double x){return pow ((1 + pow((x), 4)), 0.5);}
 
 double (*funcList[3])(double) = {func1, func2, func3};
 
+#define MAX_THREADS 8
+
 #define getMiddle(a, b) ((a) + (b)) / 2
 
 typedef struct _params {
@@ -31,7 +33,7 @@ pthread_mutex_t theMutex;
 pthread_cond_t theCond;
 
 int main(int argc, char const *argv[]) {
-    float a, b, e;
+    double a, b, e;
     char choice;
     double (*func)(double);
 
@@ -46,6 +48,11 @@ int main(int argc, char const *argv[]) {
     b = atof(argv[2]);
     e = atof(argv[3]);
     nThreads = atoi(argv[4]);
+
+    if (nThreads > 8) {
+        printf("WARNING: Trying to use more than 8 threads. Please select a number [1,8].\n");
+        exit(2);
+    }
 
     pthread_mutex_init(&theMutex, NULL);
 
@@ -66,6 +73,7 @@ int main(int argc, char const *argv[]) {
     threads = (pthread_t *) malloc(sizeof(pthread_t) * nThreads);
     results = (double *) malloc(sizeof(double) * nThreads);
 
+    //inicia-se então o cálculo do tempo da concorrencia (que inclui criações de threads e suas execuções)
     GET_TIME(begin);
 
     input = (params *) malloc(sizeof(params));
@@ -86,14 +94,18 @@ void *calcIntegral(void *args) {
     params *arguments;
     arguments = (params *) args;
     double res;
+
+    // inicia-se aqui a recursão do retangulo que foi designado
+    // qualquer thread pode criar outras threads se o numero máximo ainda não foi alcançado.
     results[arguments->id] = adaptativeQuadrature(arguments->id, arguments->func, arguments->a, arguments->b, arguments->err);
+
     pthread_mutex_lock(&theMutex);
-    finished++;
-    if (finished == nThreads) {
+    finished++; // avisa que terminou
+    if (finished == instantiate) {  // quando todas as threads instanciadas terminam, a ultima fica responsável por somar todos os retangulos finais.
         res = 0;
         for (int i = 0; i < nThreads; i++)
             res += results[i];
-        GET_TIME(end);
+        GET_TIME(end); // após todos os cálculos, podemos pegar o tempo total de execução.
         printf("Approximate value for the integral of f: %.20lf\n", res);
         printf("Time: %lfs\n", end - begin);
     }
@@ -106,6 +118,12 @@ void *calcIntegral(void *args) {
 double adaptativeQuadrature(int id, double (*func)(double), double a, double b, double err) {
     double m, funcB, funcSleft, funcSright, areaS1, areaS2, areaB;
     params *input;
+    /*
+    funcB, funcSleft, funcSright: alturas dos retangulos, calculado a partir do ponto médio entre cada um dos retangulos.
+    areaB: area do retangulo maior (b - a) * funcB
+    areaS1, areaS2: area dos retangulos menores (m - a) * funcSleft e (b - m) * funcSright
+    (left e right indicam apenas se está a esquerda ou direita do ponto médio)
+    */
     m = getMiddle(a, b);
     funcB = func(m);
     funcSleft = func(getMiddle(a, m));
@@ -113,12 +131,15 @@ double adaptativeQuadrature(int id, double (*func)(double), double a, double b, 
     areaB = (b - a) * funcB;
     areaS1 = (m - a) * funcSleft;
     areaS2 = (b - m) * funcSright;
-
+    // agora, se o módulo da diferença entre a area do retangulo maior e da soma dos retangulos menores for maior que o erro máximo, calcula a área dos dois intervalos [a,m], [b,m]
+    // porém, agora na versão concorrente, checamos se existe a possibilidade de delegar essa tarefa a uma nova threads
+    // assim, se nem todas as threads foram iniciadas, então iremos iniciar uma nova thread que ficará responsável por um dos retangulos e a thread atual fica responsável apenas pelo outro retangulo.
+    // senão, apenas retorna o valor da area do retangulo maior
     if (fabs(areaB - (areaS1 + areaS2)) > err) {
-        if (!allinstantiate) {
+        if (!allinstantiate) { //mesmo estando fora de um mutex, não há problema por ter uma confirmação dentro.
             pthread_mutex_lock(&theMutex);
 
-            if (instantiate < nThreads) {
+            if (instantiate < nThreads) { // checa se é possível instanciar.
                 input = (params *) malloc(sizeof(params));
                 input->id = instantiate;
                 input->err = err;
@@ -131,8 +152,8 @@ double adaptativeQuadrature(int id, double (*func)(double), double a, double b, 
                 pthread_mutex_unlock(&theMutex);
                 areaB = adaptativeQuadrature(id, func, a, m, err);
             }
-            else {
-                
+            else { //se não for, apenas avisa que não é mais possível instanciar e continua a trabalhar normalmente
+
                 allinstantiate = 1;
                 pthread_mutex_unlock(&theMutex);
                 areaB = adaptativeQuadrature(id, func, a, m, err) + adaptativeQuadrature(id, func, m, b, err);
