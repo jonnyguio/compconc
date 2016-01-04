@@ -9,7 +9,7 @@ double func2(double x){return pow ((1 - pow((x), 2)), 0.5);}
 double func3(double x){return pow ((1 + pow((x), 4)), 0.5);}
 
 //lista das funções
-double (*funcList[3])(double) = {func1, func2, func3};\
+double (*funcList[3])(double) = {func1, func2, func3};
 
 //macro apenas para calcular o ponto médio entre duas entradas a e b
 #define getMiddle(a, b) ((a) + (b)) / 2
@@ -40,7 +40,6 @@ double adaptativeQuadrature(double (*func)(double), double a, double b, double e
 
 int main(int argc, char const *argv[]) {
     double a, b, e, begin, end;
-    double a, b, e;
 
     char choice;
     double (*func)(double);
@@ -70,7 +69,7 @@ int main(int argc, char const *argv[]) {
     func = funcList[choice-'a'];
 
     GET_TIME(begin);
-    printf("Approximate value for the integral of f from %lf to %lf: %lf\n", a, b, adaptativeQuadrature(func, a, b, e));
+    printf("Approximate value for the integral of f from %lf to %lf: %.20lf\n", a, b, adaptativeQuadrature(func, a, b, e));
     GET_TIME(end);
     printf("Time: %lfs\n", end - begin);
 
