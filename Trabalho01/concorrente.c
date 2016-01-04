@@ -108,10 +108,8 @@ void *calcIntegral(void *args) {
     while (finished != nThreads) {
         pthread_mutex_lock(&theMutex);
         anyoneFree = arguments->id;
-        //printf("(%d) ocioso... - %d, %d, %d\n", arguments->id, finished, nThreads, finished == nThreads);
         if (finished != nThreads) {
             if (anythingSent) {
-                //printf("(%d) peguei coisa\n", arguments->id);
                 finished--;
                 anythingSent = 0;
                 anyoneFree = 0;
@@ -123,13 +121,11 @@ void *calcIntegral(void *args) {
                 pthread_mutex_unlock(&theMutex);
             }
             else {
-                //printf("(%d) aguardando mais coisa pra se fazer\n", arguments->id);
                 pthread_cond_wait(&theCond, &theMutex);
                 pthread_mutex_unlock(&theMutex);
             }
         }
         else {
-            //printf("(%d) na realidade, já acabou\n", arguments->id);
             pthread_cond_broadcast(&theCond);
             pthread_mutex_unlock(&theMutex);
         }
@@ -196,17 +192,21 @@ double adaptativeQuadrature(int id, double (*func)(double), double a, double b, 
             }
         }
         else {
-            if (anyoneFree) {
+            if (anyoneFree && !anythingSent) {
                 pthread_mutex_lock(&theMutex);
-                while (anythingSent) {
-                    pthread_cond_wait(&theCond, &theMutex);
+                if (anythingSent) {
+                    globala = m;
+                    globalb = b;
+                    anythingSent = 1;
+                    pthread_cond_broadcast(&theCond);
+                    pthread_mutex_unlock(&theMutex);
+                    areaB = adaptativeQuadrature(id, func, a, m, err);
                 }
-                globala = m;
-                globalb = b;
-                anythingSent = 1;
-                pthread_cond_broadcast(&theCond);
-                pthread_mutex_unlock(&theMutex);
-                areaB = adaptativeQuadrature(id, func, a, m, err);
+                else {
+                    pthread_cond_broadcast(&theCond);
+                    pthread_mutex_unlock(&theMutex);
+                    areaB = adaptativeQuadrature(id, func, a, m, err) + adaptativeQuadrature(id, func, m, b, err);
+                }
             }
             else {
                 areaB = adaptativeQuadrature(id, func, a, m, err) + adaptativeQuadrature(id, func, m, b, err);
