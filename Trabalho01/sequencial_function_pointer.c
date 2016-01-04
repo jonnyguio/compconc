@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
+#include "../timer.h"
 
 double func1(double x){return 1+x;}
 double func2(double x){return pow ((1 - pow((x), 2)), 0.5);}
@@ -21,14 +22,15 @@ double adaptativeQuadrature(double (*func)(double), double a, double b, double e
     areaB = (b - a) * funcB;
     areaS1 = (m - a) * funcSleft;
     areaS2 = (b - m) * funcSright;
+    //printf("%.20lf, %.20lf\n", fabs(areaB - (areaS1 + areaS2)), err);
     if (fabs(areaB - (areaS1 + areaS2)) > err) {
-        areaB = adaptativeQuadrature(func, a, m, err) + adaptativeQuadrature(func, m, b, err);
+        areaB = adaptativeQuadrature(func, m, b, err) + adaptativeQuadrature(func, a, m, err);
     }
     return areaB;
 }
 
 int main(int argc, char const *argv[]) {
-    double a, b, e;
+    double a, b, e, begin, end;
     char choice;
     double (*func)(double);
 
@@ -53,7 +55,10 @@ int main(int argc, char const *argv[]) {
 
     func = funcList[choice-'a'];
 
-    printf("Valor aproximado de f: %f\n", adaptativeQuadrature(func, a, b, e));
+    GET_TIME(begin);
+    printf("Valor aproximado de f: %.20lf\n", adaptativeQuadrature(func, a, b, e));
+    GET_TIME(end);
+    printf("Tempo gasto: %lfs\n", end - begin);
 
     return 0;
 }

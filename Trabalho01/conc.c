@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <math.h>
 #include <pthread.h>
+#include "../timer.h"
 
 double func1(double x){return 1+x;}
 double func2(double x){return pow ((1 - pow((x), 2)), 0.5);}
@@ -12,18 +13,22 @@ double (*funcList[3])(double) = {func1, func2, func3};
 //#define func(op, x) ((op) == 'a') ? 1 + (x) : ((op) == 'c') ? pow ((1 + pow((x), 4)), 0.5) : (x > -1 || x < 1) ? pow ((1 - pow((x), 2)), 0.5) : 0
 
 #define MAX_THREADS 8
+#define TAM 1000000
+#define outpp (out + 1 < 1000) ? out + 1 : 0
 
 #define getMiddle(a, b) ((a) + (b)) / 2
-
+/*
 typedef struct _queue {
     float val;
     struct _queue *next;
 } queue;
-
 typedef struct _stack {
     float val;
     struct _stack *next;
 } stack;
+queue *coordinates;
+stack *results;
+*/
 
 typedef struct _params {
     int id;
@@ -31,28 +36,26 @@ typedef struct _params {
     double (*func)(double);
 } params;
 
-queue *coordinates;
-stack *results;
+double inputs[TAM], output, begin, end;
+int in, out, size;
 
 pthread_mutex_t theMutex, stackMutex;
 pthread_cond_t theCond;
 
 int usingQueue = 0, doneMath = 0;
-
+/*
 double sumAllStack(stack *s) {
     double res = 0;
     for (; s != NULL; s = s->next)
         res += s->val;
     return res;
 }
-
 double popStack(stack **s) {
     double ret;
     ret = (*s)->val;
     (*s) = (*s)->next;
     return ret;
 }
-
 void pushStack(stack **s, float val) {
     stack *aux;
     aux = (stack *) malloc(sizeof(stack));
@@ -60,7 +63,6 @@ void pushStack(stack **s, float val) {
     aux->next = (*s);
     (*s) = aux;
 }
-
 double popQueue(queue **q) {
     double ret;
     queue *aux;
@@ -70,7 +72,6 @@ double popQueue(queue **q) {
     free(aux);
     return ret;
 }
-
 void pushQueue(queue **q, float val) {
     queue *aux;
     if (*q == NULL) {
@@ -85,21 +86,37 @@ void pushQueue(queue **q, float val) {
         aux->next->next = NULL;
     }
 }
+void print(queue *q, stack *s) {
+    queue *qaux;
+    stack *saux;
+    printf("Queue:\n\t");
+    for (qaux = q; qaux != NULL; qaux = qaux->next) {
+        printf("%lf ", qaux->val);
+    }
+    printf("\nStack:\n\t");
+    for (saux = s; saux != NULL; saux = saux->next)
+        printf("%lf ", saux->val);
+    printf("\n");
+}
+*/
 
 void adaptativeQuadrature(int id, double (*func)(double), double a, double b, double err) {
     double m, funcB, funcSleft, funcSright, areaS1, areaS2, areaB;
+    int counter = 0;
     m = getMiddle(a, b);
     funcB = func(m);
     funcSleft = func(getMiddle(a, m));
     funcSright = func(getMiddle(m, b));
     areaB = (b - a) * funcB;
+    //printf("(%.20lf - %.20lf) * %.20lf = %.20lf\n", b, a, funcB, areaB);
     areaS1 = (m - a) * funcSleft;
+    //printf("(%.20lf - %.20lf) * %.20lf = %.20lf\n", m, a, funcSleft, areaS1);
     areaS2 = (b - m) * funcSright;
+    //printf("(%.20lf - %.20lf) * %.20lf = %.20lf\n", b, m, funcSright, areaS2);
     //printf("%.20lf, %.20lf\n", fabs(areaB - (areaS1 + areaS2)), err);
-    if (fabs(areaB - (areaS1 + areaS2)) < err) {
+    if (fabs(areaB - (areaS1 + areaS2)) <= err) {
         pthread_mutex_lock(&stackMutex);
-        pushStack(&results, areaB);
-        //areaB = adaptativeQuadrature(func, a, m, err) + adaptativeQuadrature(func, m, b, err);
+        output += areaB;
         pthread_mutex_unlock(&stackMutex);
         pthread_mutex_lock(&theMutex);
         usingQueue--;
@@ -108,10 +125,20 @@ void adaptativeQuadrature(int id, double (*func)(double), double a, double b, do
     else {
         //printf("(%d) parei aqui?\n", id);
         pthread_mutex_lock(&theMutex);
-        pushQueue(&coordinates, a);
-        pushQueue(&coordinates, m);
-        pushQueue(&coordinates, m);
-        pushQueue(&coordinates, b);
+        while (size + 4 > TAM) {
+            printf("(%d) estorou - %d\n", id, ++counter);
+            pthread_cond_wait(&theCond, &theMutex);
+        }
+        inputs[in] = a;
+        in = (in + 1 < TAM) ? in + 1 : 0;
+        inputs[in] = m;
+        in = (in + 1 < TAM) ? in + 1 : 0;
+        inputs[in] = m;
+        in = (in + 1 < TAM) ? in + 1 : 0;
+        inputs[in] = b;
+        in = (in + 1 < TAM) ? in + 1 : 0;
+        size += 4;
+        //printf("%.10lf, %.10lf (2x), %.10lf\n", a,m,b);
         usingQueue--;
         pthread_mutex_unlock(&theMutex);
     }
@@ -120,40 +147,50 @@ void adaptativeQuadrature(int id, double (*func)(double), double a, double b, do
 void* calcIntegral(void *args) {
     params *arguments;
     arguments = (params *) args;
-    double a, b, res;
+    double a, b;
     //printf("(%d) comecei...\n", arguments->id);
     do {
+        //printf("(%d) %d\n", arguments->id, usingQueue);
         pthread_mutex_lock(&theMutex);
-        //printf("(%d) peguei o lock (usingQueue: %d)\n", arguments->id, usingQueue);
-        if (coordinates != NULL) {
-            //printf("(%d) pegando x's\n", arguments->id);
-            a = popQueue(&coordinates);
-            b = popQueue(&coordinates);
-            usingQueue++;
-            pthread_mutex_unlock(&theMutex);
-            //printf("(%d) vo calcular\n", arguments->id);
-            adaptativeQuadrature(arguments->id, arguments->func, a, b, arguments->err);
-            //printf("(%d) terminei calculo\n", arguments->id);
-        }
-        else
-            pthread_mutex_unlock(&theMutex);
-    } while (usingQueue || coordinates != NULL);
+        //printf("%d\n", size);
+        if (inputs[out] != -1) {
 
-    printf("(%d) sai do meio, indo pro fim\n", arguments->id);
+            a = inputs[out];
+            inputs[out] = -1;
+            out = (out + 1 < TAM) ? out + 1 : 0;
+
+            b = inputs[out];
+            inputs[out] = -1;
+            out = (out + 1 < TAM) ? out + 1 : 0;
+
+            size -= 2;
+            //printf("%.10lf, %.10lf\n", a, b);
+            usingQueue++;
+            pthread_cond_broadcast(&theCond);
+            pthread_mutex_unlock(&theMutex);
+            adaptativeQuadrature(arguments->id, arguments->func, a, b, arguments->err);
+        }
+        else {
+            pthread_mutex_unlock(&theMutex);
+        }
+    } while (usingQueue || inputs[out] != -1);
+
+    //printf("(%d) sai do meio, indo pro fim\n", arguments->id);
     pthread_mutex_lock(&stackMutex);
     if (!doneMath) {
-        res = sumAllStack(results);
-        printf("Valor aproximado de f: %f\n", res);
+        GET_TIME(end);
+        printf("Valor aproximado de f: %.20lf\n", output);
+        printf("Tempo gasto: %lfs\n", end - begin);
         doneMath = 1;
     }
     pthread_mutex_unlock(&stackMutex);
 
-    printf("(%d) chega\n", arguments->id);
+    //printf("(%d) chega\n", arguments->id);
     pthread_exit(NULL);
 }
 
 int main(int argc, char const *argv[]) {
-    float a, b, e;
+    double a, b, e;
     char choice;
     double (*func)(double);
     int nThreads;
@@ -165,7 +202,6 @@ int main(int argc, char const *argv[]) {
         printf("Usage: <a (interval min)> <b (interval max)> <e (max error)> <threads>\n");
         exit(1);
     }
-
     a = atof(argv[1]);
     b = atof(argv[2]);
     e = atof(argv[3]);
@@ -188,12 +224,21 @@ int main(int argc, char const *argv[]) {
 
     func = funcList[choice-'a'];
 
-    coordinates = NULL;
-    pushQueue(&coordinates, a);
-    pushQueue(&coordinates, b);
-    results = NULL;
+    in = 2;
+    out = 0;
+    output = 0;
+    size = 0;
+
+    inputs[0] = a;
+    inputs[1] = b;
+
+    for (int i = 2; i < TAM; i++)
+        inputs[i] = -1;
+
     usingQueue = 0;
     doneMath = 0;
+
+    GET_TIME(begin);
 
     for (int i = 0; i < nThreads; i++) {
         input = (params *) malloc(sizeof(input));
