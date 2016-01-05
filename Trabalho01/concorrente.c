@@ -103,12 +103,12 @@ void *calcIntegral(void *args) {
 
     pthread_mutex_lock(&theMutex);
     finished++;
-    printf("(%d) Terminei! Me liberando - %d, %d\n", arguments->id, finished, nThreads);
+    printf("(%d) Terminei! Me liberando - %d, %d, %d\n", arguments->id, finished, nThreads, instantiated);
     pthread_mutex_unlock(&theMutex);
-    while (finished != nThreads) {
+    while (finished != instantiated) {
         pthread_mutex_lock(&theMutex);
         anyoneFree = arguments->id;
-        if (finished != nThreads) {
+        if (finished != instantiated) {
             if (anythingSent) {
                 finished--;
                 anythingSent = 0;
