@@ -33,7 +33,7 @@ char end;					//Verifica o término do programa
 pthread_mutex_t freeThreads_mutex, sum_mutex;
 pthread_cond_t freeThreads_cond;
 
-double finalSum;			//Resultado da aproximação
+double *finalSum;			//Vetor com resultado da aproximação. Cada posição representa a parcial encontrada por cada thread, para evitar sincronizações desnecessárias.
 
 //Pede uma thread para calcular o intervalo dado
 void askForThread(Interval interval);
@@ -51,11 +51,10 @@ void adaptativeQuadrature(Interval interval, int id);
 void askForThread(Interval interval)
 {
 	int i, j;
-	printf("piru\n");
 	for (i = 0; i < nThreads; ++i)
 	{
 		pthread_mutex_lock(&freeThreads_mutex);
-		while(freeThreads[0]!=-1)
+		while(freeThreads[0]==-1)
 			pthread_cond_wait(&freeThreads_cond, &freeThreads_mutex);
 
 		//jeito horrível plim plim (lerdo as fudge)
@@ -78,11 +77,14 @@ void imFree(int id)
 }
 
 void* threadFunction(void* arg)
-{	
+{
 	int myid = *(int*)(arg);
 	while(!end)
 	{
-		while(!goodToGo[myid] && !end);
+		printf("penes %d\n", myid);
+		while(!goodToGo[myid])
+			if(end)
+				pthread_exit(NULL);
 		adaptativeQuadrature(threadIntervals[myid], myid);
 	}
 	pthread_exit(NULL);
@@ -99,6 +101,8 @@ void adaptativeQuadrature(Interval interval, int id)
     areaS1, areaS2: area dos retangulos menores (m - a) * funcSleft e (b - m) * funcSright
     (left e right indicam apenas se está a esquerda ou direita do ponto médio)
     */
+    printf("piru %d\n", id);
+
     m = getMiddle(interval.a, interval.b);
     
     funcB = interval.func(m);
@@ -125,7 +129,7 @@ void adaptativeQuadrature(Interval interval, int id)
     	goodToGo[id] = 0;
     	imFree(id);
     	pthread_mutex_lock(&sum_mutex);
-    	finalSum += areaB;
+    	finalSum[id] += areaB;
     	pthread_mutex_unlock(&sum_mutex);
 
     	if(id == 0)
@@ -151,6 +155,8 @@ int main(int argc, char const *argv[])
     e = strtod(argv[3], NULL);
     nThreads = atoi(argv[4]);
 
+    printf("nThreads = %d\n", nThreads);
+
     printf("Choose which function:\n");
     printf("(a) f(x) = 1 + x\n(b) f(x) = √(1 − xˆ2), −1 < x < 1\n(c) f(x) = √(1 + xˆ4)\n");
 
@@ -171,32 +177,42 @@ int main(int argc, char const *argv[])
 	
 	id = (int *) malloc(sizeof(int) * nThreads);
     tid = (pthread_t *) malloc(sizeof(pthread_t) * nThreads);
-    if(tid == NULL) {printf("--ERRO: malloc()\n"); exit(1);}
     freeThreads = (int *) malloc(sizeof(int) * nThreads);
-    if(freeThreads == NULL) {printf("--ERRO: malloc()\n"); exit(1);}
     goodToGo = (int *) malloc(sizeof(int) * nThreads);
-    if(goodToGo == NULL) {printf("--ERRO: malloc()\n"); exit(1);}
 	threadIntervals = (Interval *) malloc(sizeof(Interval) * nThreads);
+	finalSum = (double *) calloc(sizeof(double), nThreads);
+    //if(goodToGo == NULL) {printf("--ERRO: malloc()\n"); exit(1);}
+	//if(id == NULL) {printf("--ERRO: malloc()\n"); exit(1);}
+    //if(tid == NULL) {printf("--ERRO: malloc()\n"); exit(1);}
+    //if(freeThreads == NULL) {printf("--ERRO: malloc()\n"); exit(1);}
 
 	for (int i = 0; i < nThreads; ++i)
 	{		
-		id[i] = i;			
+		id[i] = i;
+		goodToGo[i] = 1;
+    	freeThreads[i] = i;
+	}
+	end = 0;
+	for (int i = 0; i < nThreads; ++i)
+	{		
 		if (pthread_create(&tid[i], NULL, threadFunction, (void *) &id[i])) {
       		printf("--ERRO: pthread_create()\n"); exit(-1);
-    	}			
-		goodToGo[i] = 1;	
-		freeThreads[i] = i;
-		
+    	}
 	}	
-	end = 0;
-
 	askForThread((Interval){func, a, b, e});
+
+	while(!end);
 
 	pthread_mutex_destroy(&sum_mutex);
 	pthread_mutex_destroy(&freeThreads_mutex);
-  	pthread_cond_destroy(&freeThreads_cond);
+ 	pthread_cond_destroy(&freeThreads_cond);
 
-    printf("Approximate value for the integral of f from %lf to %lf: %lf\n", a, b, finalSum);
+	for (int i = 1; i < nThreads; ++i)
+	{
+		finalSum[0]+=finalSum[i];
+	}
+
+    printf("Approximate value for the integral of f from %lf to %lf: %lf\n", a, b, finalSum[0]);
 
   	pthread_exit (NULL);
 }
