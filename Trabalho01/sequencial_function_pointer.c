@@ -9,7 +9,7 @@ double func2(double x){return pow ((1 - pow((x), 2)), 0.5);}
 double func3(double x){return pow ((1 + pow((x), 4)), 0.5);}
 
 //lista das funções
-double (*funcList[3])(double) = {func1, func2, func3};
+double (*funcList[4])(double) = {func1, func2, func3, sin};
 
 //macro apenas para calcular o ponto médio entre duas entradas a e b
 #define getMiddle(a, b) ((a) + (b)) / 2
@@ -54,17 +54,17 @@ int main(int argc, char const *argv[]) {
     e = strtod(argv[3], NULL);
 
     printf("Choose which function:\n");
-    printf("(a) f(x) = 1 + x\n(b) f(x) = √(1 − xˆ2), −1 < x < 1\n(c) f(x) = √(1 + xˆ4)\n");
+    printf("(a) f(x) = 1 + x\n(b) f(x) = √(1 − xˆ2), −1 < x < 1\n(c) f(x) = √(1 + xˆ4)\n(d) f(x) = sin(x)\n");
 
     // Apenas um loop que força o usuario a escolher uma função que pode ser usada.
     do {
-        printf("a b or c: ");
+        printf("a, b, c or d: ");
         scanf("%c", &choice);
         if (choice == 'b' && (a < -1 || b > 1)) {
             printf("cannot choose function 'b' because a is less than -1 or b is bigger than 1\n");
             choice = 'd';
         }
-    } while (choice != 'a' && choice != 'b' && choice != 'c') ;
+    } while (choice < 'a' || choice > 'd') ;
 
     func = funcList[choice-'a'];
 
