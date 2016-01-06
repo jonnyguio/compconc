@@ -7,13 +7,15 @@
 double func1(double x){return 1+x;}
 double func2(double x){return pow ((1 - pow((x), 2)), 0.5);}
 double func3(double x){return pow ((1 + pow((x), 4)), 0.5);}
+double func4(double x){return pow (sin(x), 2);}
 
 //lista das funções
-double (*funcList[4])(double) = {func1, func2, func3, sin};
+double (*funcList[4])(double) = {func1, func2, func3, func4};
 
 //macro apenas para calcular o ponto médio entre duas entradas a e b
 #define getMiddle(a, b) ((a) + (b)) / 2
-
+int
+    counter = 0;
 double adaptativeQuadrature(double (*func)(double), double a, double b, double err) {
     double m, funcB, funcSleft, funcSright, areaS1, areaS2, areaB;
     /*
@@ -32,6 +34,7 @@ double adaptativeQuadrature(double (*func)(double), double a, double b, double e
     // agora, se o módulo da diferença entre a area do retangulo maior e da soma dos retangulos menores for maior que o erro máximo, calcula a área dos dois intervalos [a,m], [b,m]
     // senão, apenas retorna o valor da area do retangulo maior
     if ((areaB - (areaS1 + areaS2)) > err || ((areaS1 + areaS2) - areaB) > err) {
+        counter++;
         // assim, a área nova sera definida pela soma das áreas dos retangulos menores
         return adaptativeQuadrature(func, a, m, err) + adaptativeQuadrature(func, m, b, err);
     }
@@ -54,7 +57,7 @@ int main(int argc, char const *argv[]) {
     e = strtod(argv[3], NULL);
 
     printf("Choose which function:\n");
-    printf("(a) f(x) = 1 + x\n(b) f(x) = √(1 − xˆ2), −1 < x < 1\n(c) f(x) = √(1 + xˆ4)\n(d) f(x) = sin(x)\n");
+    printf("(a) f(x) = 1 + x\n(b) f(x) = √(1 − xˆ2), −1 < x < 1\n(c) f(x) = √(1 + xˆ4)\n(d) f(x) = sin(x) ^ 2\n");
 
     // Apenas um loop que força o usuario a escolher uma função que pode ser usada.
     do {

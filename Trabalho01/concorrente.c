@@ -8,10 +8,10 @@
 double func1(double x){return 1+x;}
 double func2(double x){return pow ((1 - pow((x), 2)), 0.5);}
 double func3(double x){return pow ((1 + pow((x), 4)), 0.5);}
-//double func4(double x){return sin(x);}
+double func4(double x){return pow (sin(x), 2);}
 
 //lista das funções
-double (*funcList[4])(double) = {func1, func2, func3, sin};
+double (*funcList[4])(double) = {func1, func2, func3, func4};
 
 //Numero maximo de threads do programa
 #define MAX_THREADS 8
@@ -31,12 +31,14 @@ pthread_mutex_t theMutex; // Mutex responsável por seções críticas
 pthread_cond_t theCond; // Condição usada na espera de novos retangulos
 
 int
+    *orders,
     instantiated, finished, allinstantiated = 0, nThreads, // usado em instanciação e checagem de términos
-    anyoneFree, anythingSent, // usado na espera de novos retangulos
+    anyoneFree = 0, anythingSent = 0, // usado na espera de novos retangulos
     doneMath; // Usado apenas para saber se alguma thread já calculou o resultado final
 
 double
     *results, // vetor responsável pelas contas finais
+    **mustSum,
     begin, end, // para cálculo de tempo
     globala, globalb; // para passar novos retangulos à threads ociosas
 
@@ -66,12 +68,12 @@ int main(int argc, char const *argv[]) {
     }
 
     printf("Choose which function:\n");
-    printf("(a) f(x) = 1 + x\n(b) f(x) = √(1 − xˆ2), −1 < x < 1\n(c) f(x) = √(1 + xˆ4)\n(d) f(x) = sin(x)\n");
+    printf("(a) f(x) = 1 + x\n(b) f(x) = √(1 − xˆ2), −1 < x < 1\n(c) f(x) = √(1 + xˆ4)\n(d) f(x) = sin(x) ^ 2\n");
     do {
         printf("a, b, c or d: ");
         scanf("%c", &choice);
         if (choice == 'b' && (a < -1 || b > 1)) {
-            printf("cannot choose function 'b' because a is less than -1 or b is bigger than 1\n");            
+            printf("cannot choose function 'b' because a is less than -1 or b is bigger than 1\n");
         }
     } while (choice < 'a' || choice > 'd') ;
 
@@ -86,7 +88,16 @@ int main(int argc, char const *argv[]) {
     instantiated = 0;
     finished = 0;
     threads = (pthread_t *) malloc(sizeof(pthread_t) * nThreads);
+    orders = (int *) malloc(sizeof(double) * nThreads);
     results = (double *) malloc(sizeof(double) * nThreads);
+    mustSum = (double **) malloc(sizeof(double) * nThreads);
+    for (int i = 0; i < nThreads; i++) {
+        orders[i] = 0;
+        mustSum[i] = (double *) malloc(sizeof(double) * nThreads);
+        for (int j = 0; j < nThreads; j++) {
+            mustSum[i][j] = 0;
+        }
+    }
     doneMath = 0;
 
     //inicia-se então o cálculo do tempo da concorrencia (que inclui criações de threads e suas execuções)
@@ -110,7 +121,8 @@ int main(int argc, char const *argv[]) {
 void *calcIntegral(void *args) {
     params *arguments;
     arguments = (params *) args;
-    double res;
+    int whereSum, orderSum, i;
+    double res, newSum;
 
     // inicia-se aqui a recursão do retangulo que foi designado
     // qualquer thread pode criar outras threads se o numero máximo ainda não foi alcançado.
@@ -120,27 +132,38 @@ void *calcIntegral(void *args) {
     pthread_mutex_lock(&theMutex);
     finished++;
     pthread_mutex_unlock(&theMutex);
-
+    //printf("ué\n");
     // Loop então para threads que já calcularam seus devidos retangulos e agora estão ociosas.
     while (finished != instantiated) {
         pthread_mutex_lock(&theMutex);
-        anyoneFree = arguments->id; // avisa a todos que ela está livre
         if (finished != instantiated) { // garantindo na seção crítica a condição do loop
 
             // se alguém enviou um novo retangulo a calcular, faz-se assim os cálculos do novo retangulo
             // senão, apenas espera o envio de um novo sinal
             if (anythingSent) {
                 finished--;
+                whereSum = anythingSent;
+                orderSum = orders[anythingSent];
                 anythingSent = 0;
                 anyoneFree = 0;
                 pthread_cond_broadcast(&theCond);
                 pthread_mutex_unlock(&theMutex);
-                results[arguments->id] += adaptativeQuadrature(arguments->id, arguments->func, globala, globalb, arguments->err);
+                newSum = adaptativeQuadrature(arguments->id, arguments->func, globala, globalb, arguments->err);
                 pthread_mutex_lock(&theMutex);
                 finished++;
+                mustSum[whereSum][orderSum] = newSum;
+                printf("(%d) %d - [%d][%d]\n", arguments->id, instantiated, whereSum, orderSum);
+                if (orderSum == instantiated) {
+                    for (i = instantiated - 1; i > 0; i--) {
+                        mustSum[whereSum][0] += mustSum[whereSum][i];
+                        mustSum[whereSum][i] = 0;
+                    }
+                    orders[whereSum] = 0;
+                }
                 pthread_mutex_unlock(&theMutex);
             }
             else {
+                anyoneFree = arguments->id; // avisa a todos que ela está livre
                 pthread_cond_wait(&theCond, &theMutex);
                 pthread_mutex_unlock(&theMutex);
             }
@@ -153,12 +176,17 @@ void *calcIntegral(void *args) {
     }
     // avisa a todas as outras threads que já passou direto do loop, para caso tenha alguma esperando novos dados (que não irão chegar nunca)
     pthread_cond_broadcast(&theCond);
+
     pthread_mutex_lock(&theMutex);
     if (!doneMath) {  // quando todas as threads instanciadas terminam, a ultima fica responsável por somar todos os retangulos finais.
         doneMath = 1;
         res = 0;
-        for (int i = 0; i < nThreads; i++)
+        for (int i = 0; i < nThreads; i++) {
             res += results[i];
+            for (int j = 0; j < nThreads; j++) {
+                res += mustSum[j][i];
+            }
+        }
         GET_TIME(end); // após todos os cálculos, podemos pegar o tempo total de execução.
         printf("Approximate value for the integral of f: %.20lf\n", res);
         printf("Time: %lfs\n", end - begin);
@@ -196,6 +224,7 @@ double adaptativeQuadrature(int id, double (*func)(double), double a, double b, 
             if (instantiated < nThreads) { // checa se é possível instanciar.
                 input = (params *) malloc(sizeof(params));
                 input->id = instantiated;
+                printf("Id: %d\n", input->id);
                 input->err = err;
                 input->a = m;
                 input->b = b;
@@ -215,11 +244,14 @@ double adaptativeQuadrature(int id, double (*func)(double), double a, double b, 
         }
         else {
             if (anyoneFree && !anythingSent) { // checa se tem alguém ocioso e se ninguém enviou dado ainda
+
                 pthread_mutex_lock(&theMutex);
-                if (anythingSent) { // recheca a condição, agora numa seção crítica (entre locks)
+                if (!anythingSent) { // recheca a condição, agora numa seção crítica (entre locks)
                     globala = m;
                     globalb = b;
-                    anythingSent = 1;
+                    anythingSent = id;
+                    orders[id]++;
+                    anyoneFree = 0;
                     // avisa as threads que estão esperando que já enviou dados
                     pthread_cond_broadcast(&theCond);
                     pthread_mutex_unlock(&theMutex);
