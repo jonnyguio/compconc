@@ -37,7 +37,7 @@ pthread_mutex_t theMutex, bufMutex; // Mutex responsável por seções críticas
 pthread_cond_t theCond, bufCond; // Condição usada na espera de novos retangulos
 
 int
-    *pos, freePos, size,
+    *pos, freePos, size, // utilizado no manuseamento do buffer
     instantiated, finished, allinstantiated = 0, nThreads, // usado em instanciação e checagem de términos
     anyoneFree = 0, anythingSent = 0, // usado na espera de novos retangulos
     doneMath; // Usado apenas para saber se alguma thread já calculou o resultado final
