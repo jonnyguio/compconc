@@ -16,6 +16,12 @@ double (*funcList[4])(double) = {func1, func2, func3, func4};
 //Numero maximo de threads do programa
 #define MAX_THREADS 8
 
+//Tamanho do buffer
+#define TAM 100000
+
+//Flag de escrita
+#define NOT_IN_USE -123456789
+
 //macro apenas para calcular o ponto médio entre duas entradas a e b
 #define getMiddle(a, b) ((a) + (b)) / 2
 
@@ -27,23 +33,25 @@ typedef struct _params {
 } params;
 
 pthread_t *threads; // Vetor que contém as threads
-pthread_mutex_t theMutex; // Mutex responsável por seções críticas
-pthread_cond_t theCond; // Condição usada na espera de novos retangulos
+pthread_mutex_t theMutex, bufMutex; // Mutex responsável por seções críticas
+pthread_cond_t theCond, bufCond; // Condição usada na espera de novos retangulos
 
 int
-    *orders,
+    *pos, freePos, size,
     instantiated, finished, allinstantiated = 0, nThreads, // usado em instanciação e checagem de términos
     anyoneFree = 0, anythingSent = 0, // usado na espera de novos retangulos
     doneMath; // Usado apenas para saber se alguma thread já calculou o resultado final
 
 double
+    **buffer,
     *results, // vetor responsável pelas contas finais
-    **mustSum,
     begin, end, // para cálculo de tempo
     globala, globalb; // para passar novos retangulos à threads ociosas
 
 void *calcIntegral(void *args); // função das threads
-double adaptativeQuadrature(int id, double (*func)(double), double a, double b, double err); // função de calculo da quadratura adaptativa
+double adaptativeQuadrature(int id, double (*func)(double), double a, double b, double err, int preparingBuffer); // função de calculo da quadratura adaptativa
+void insertOnBuffer(int id, double value, int pos);
+double removeFromBuffer(int id, int pos);
 
 int main(int argc, char const *argv[]) {
     double a, b, e;
@@ -80,6 +88,8 @@ int main(int argc, char const *argv[]) {
     // Inicialização do mutex e da condição
     pthread_mutex_init(&theMutex, NULL);
     pthread_cond_init(&theCond, NULL);
+    pthread_mutex_init(&bufMutex, NULL);
+    pthread_cond_init(&bufCond, NULL);
 
     // Escolha da função
     func = funcList[choice-'a'];
@@ -88,14 +98,15 @@ int main(int argc, char const *argv[]) {
     instantiated = 0;
     finished = 0;
     threads = (pthread_t *) malloc(sizeof(pthread_t) * nThreads);
-    orders = (int *) malloc(sizeof(double) * nThreads);
     results = (double *) malloc(sizeof(double) * nThreads);
-    mustSum = (double **) malloc(sizeof(double) * nThreads);
+    pos = (int *) malloc(sizeof(int) * nThreads);
+    buffer = (double **) malloc(sizeof(double) * nThreads);
+    size = 0;
     for (int i = 0; i < nThreads; i++) {
-        orders[i] = 0;
-        mustSum[i] = (double *) malloc(sizeof(double) * nThreads);
-        for (int j = 0; j < nThreads; j++) {
-            mustSum[i][j] = 0;
+        pos[i] = 0;
+        buffer[i] = (double *) malloc(sizeof(double) * TAM);
+        for (int j = 0; j < TAM; j++) {
+            buffer[i][j] = NOT_IN_USE;
         }
     }
     doneMath = 0;
@@ -117,22 +128,20 @@ int main(int argc, char const *argv[]) {
     return 0;
 }
 
-
 void *calcIntegral(void *args) {
     params *arguments;
     arguments = (params *) args;
-    int whereSum, orderSum, i;
-    double res, newSum;
+    int i, whereSum, pos;
+    double res, newSum, locala, localb;
 
     // inicia-se aqui a recursão do retangulo que foi designado
     // qualquer thread pode criar outras threads se o numero máximo ainda não foi alcançado.
-    results[arguments->id] = adaptativeQuadrature(arguments->id, arguments->func, arguments->a, arguments->b, arguments->err);
+    results[arguments->id] = adaptativeQuadrature(arguments->id, arguments->func, arguments->a, arguments->b, arguments->err, 0);
 
     // pequena seção crítica para quem terminou os cálculos anotar que terminou
     pthread_mutex_lock(&theMutex);
     finished++;
     pthread_mutex_unlock(&theMutex);
-    //printf("ué\n");
     // Loop então para threads que já calcularam seus devidos retangulos e agora estão ociosas.
     while (finished != instantiated) {
         pthread_mutex_lock(&theMutex);
@@ -141,29 +150,24 @@ void *calcIntegral(void *args) {
             // se alguém enviou um novo retangulo a calcular, faz-se assim os cálculos do novo retangulo
             // senão, apenas espera o envio de um novo sinal
             if (anythingSent) {
+
+                // a maior parte das operações é para guardar em variáveis locais, e assim as variáveis globais ficam livres para qualquer alteração
                 finished--;
-                whereSum = anythingSent;
-                orderSum = orders[anythingSent];
+                whereSum = anythingSent - 1;
                 anythingSent = 0;
                 anyoneFree = 0;
+                locala = globala; localb = globalb;
+                pos = freePos;
                 pthread_cond_broadcast(&theCond);
                 pthread_mutex_unlock(&theMutex);
-                newSum = adaptativeQuadrature(arguments->id, arguments->func, globala, globalb, arguments->err);
+                newSum = adaptativeQuadrature(arguments->id, arguments->func, locala, localb, arguments->err, 1);
+                insertOnBuffer(whereSum, newSum, pos);
                 pthread_mutex_lock(&theMutex);
                 finished++;
-                mustSum[whereSum][orderSum] = newSum;
-                printf("(%d) %d - [%d][%d]\n", arguments->id, instantiated, whereSum, orderSum);
-                if (orderSum == instantiated) {
-                    for (i = instantiated - 1; i > 0; i--) {
-                        mustSum[whereSum][0] += mustSum[whereSum][i];
-                        mustSum[whereSum][i] = 0;
-                    }
-                    orders[whereSum] = 0;
-                }
                 pthread_mutex_unlock(&theMutex);
             }
             else {
-                anyoneFree = arguments->id; // avisa a todos que ela está livre
+                anyoneFree = arguments->id + 1; // avisa a todos que ela está livre
                 pthread_cond_wait(&theCond, &theMutex);
                 pthread_mutex_unlock(&theMutex);
             }
@@ -181,11 +185,8 @@ void *calcIntegral(void *args) {
     if (!doneMath) {  // quando todas as threads instanciadas terminam, a ultima fica responsável por somar todos os retangulos finais.
         doneMath = 1;
         res = 0;
-        for (int i = 0; i < nThreads; i++) {
+        for (i = 0; i < nThreads; i++) {
             res += results[i];
-            for (int j = 0; j < nThreads; j++) {
-                res += mustSum[j][i];
-            }
         }
         GET_TIME(end); // após todos os cálculos, podemos pegar o tempo total de execução.
         printf("Approximate value for the integral of f: %.20lf\n", res);
@@ -197,9 +198,10 @@ void *calcIntegral(void *args) {
     pthread_exit(NULL);
 }
 
-double adaptativeQuadrature(int id, double (*func)(double), double a, double b, double err) {
+double adaptativeQuadrature(int id, double (*func)(double), double a, double b, double err, int preparingBuffer) {
     double m, funcB, funcSleft, funcSright, areaS1, areaS2, areaB;
     params *input;
+    int preservePos;
     /*
     funcB, funcSleft, funcSright: alturas dos retangulos, calculado a partir do ponto médio entre cada um dos retangulos.
     areaB: area do retangulo maior (b - a) * funcB
@@ -224,7 +226,6 @@ double adaptativeQuadrature(int id, double (*func)(double), double a, double b, 
             if (instantiated < nThreads) { // checa se é possível instanciar.
                 input = (params *) malloc(sizeof(params));
                 input->id = instantiated;
-                printf("Id: %d\n", input->id);
                 input->err = err;
                 input->a = m;
                 input->b = b;
@@ -233,41 +234,74 @@ double adaptativeQuadrature(int id, double (*func)(double), double a, double b, 
                 instantiated++;
 
                 pthread_mutex_unlock(&theMutex);
-                areaB = adaptativeQuadrature(id, func, a, m, err);
+                areaB = adaptativeQuadrature(id, func, a, m, err, preparingBuffer);
             }
             else { //se não for, apenas avisa que não é mais possível instanciar e continua a trabalhar normalmente
 
                 allinstantiated = 1;
                 pthread_mutex_unlock(&theMutex);
-                areaB = adaptativeQuadrature(id, func, a, m, err) + adaptativeQuadrature(id, func, m, b, err);
+                areaB = adaptativeQuadrature(id, func, a, m, err, preparingBuffer) + adaptativeQuadrature(id, func, m, b, err, preparingBuffer);
             }
         }
         else {
-            if (anyoneFree && !anythingSent) { // checa se tem alguém ocioso e se ninguém enviou dado ainda
+            // Preparing buffer é para que não ocorra que threads que antes estavam ociosas busquem por threads atualmente ociosas para calcular um retangulo
+            // é necessário para que o processamento continue, e não é problema pois a ociosidade da outra thread acabará rapido, basta uma thread ainda no cálculo inicial a chame
+            if (!anythingSent && anyoneFree && !preparingBuffer) { // checa se tem alguém ocioso e se ninguém enviou dado ainda
 
                 pthread_mutex_lock(&theMutex);
                 if (!anythingSent) { // recheca a condição, agora numa seção crítica (entre locks)
                     globala = m;
                     globalb = b;
-                    anythingSent = id;
-                    orders[id]++;
+                    anythingSent = id + 1;
+                    freePos = pos[id];
+                    pos[id] = (pos[id] + 1 < TAM) ? pos[id] + 1 : 0;
                     anyoneFree = 0;
+                    preservePos = freePos;
                     // avisa as threads que estão esperando que já enviou dados
                     pthread_cond_broadcast(&theCond);
                     pthread_mutex_unlock(&theMutex);
-                    areaB = adaptativeQuadrature(id, func, a, m, err);
+                    areaB = removeFromBuffer(id, preservePos) + adaptativeQuadrature(id, func, a, m, err, preparingBuffer);
                 }
                 else {
                     // senão, simplesmente avisa que saiu do loop e continua execução
                     pthread_cond_broadcast(&theCond);
                     pthread_mutex_unlock(&theMutex);
-                    areaB = adaptativeQuadrature(id, func, a, m, err) + adaptativeQuadrature(id, func, m, b, err);
+                    areaB = adaptativeQuadrature(id, func, a, m, err, preparingBuffer) + adaptativeQuadrature(id, func, m, b, err, preparingBuffer);
                 }
             }
             else { // senão, simplesmente calcula mais retangulos
-                areaB = adaptativeQuadrature(id, func, a, m, err) + adaptativeQuadrature(id, func, m, b, err);
+                areaB = adaptativeQuadrature(id, func, a, m, err, preparingBuffer) + adaptativeQuadrature(id, func, m, b, err, preparingBuffer);
             }
         }
     }
     return areaB;
+}
+
+// Quando a thread antes ociosa que recebeu um novo trabalho termina de calcular, ela grava no buffer o valor.
+// Senão, ela espera para que tenha espaço no buffer para poder escrever
+void insertOnBuffer(int id, double value, int pos) {
+    pthread_mutex_lock(&bufMutex);
+    while (size + 1 >= TAM) {
+        pthread_cond_wait(&bufCond, &bufMutex);
+    }
+    buffer[id][pos] = value;
+    size++;
+    pthread_cond_broadcast(&bufCond);
+    pthread_mutex_unlock(&bufMutex);
+}
+
+// A função "remove from buffer" força uma thread esperar que outra thread faça o cálculo do retangulo
+// Esta espera é necessária para garantir que a ordem das somas seja preservada (ou pelo menos suficientemente parecida com a sequencial)
+double removeFromBuffer(int id, int pos) {
+    double ret;
+    pthread_mutex_lock(&bufMutex);
+    while (buffer[id][pos] == NOT_IN_USE) {
+        pthread_cond_wait(&bufCond, &bufMutex);
+    }
+    ret = buffer[id][pos];
+    buffer[id][pos] = NOT_IN_USE;
+    size--;
+    pthread_cond_broadcast(&bufCond);
+    pthread_mutex_unlock(&bufMutex);
+    return ret;
 }
