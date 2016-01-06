@@ -1,0 +1,610 @@
+Função (a):
+	1 threads:
+		Low precision: 
+			Interval Size: Small
+				Result: 24.00000000000000000000
+				Time: 0.000166s
+			Interval Size: Big
+				Result: 15300.00000000000000000000
+				Time: 0.000151s
+		Medium precision: 
+			Interval Size: Small
+				Result: 24.00000000000000000000
+				Time: 0.000154s
+			Interval Size: Big
+				Result: 15300.00000000000000000000
+				Time: 0.000174s
+		High precision: 
+			Interval Size: Small
+				Result: 24.00000000000000000000
+				Time: 0.000119s
+			Interval Size: Big
+				Result: 15300.00000000000000000000
+				Time: 0.000165s
+	2 threads:
+		Low precision: 
+			Interval Size: Small
+				Result: 24.00000000000000000000
+				Time: 0.000076s
+			Interval Size: Big
+				Result: 15300.00000000000000000000
+				Time: 0.000148s
+		Medium precision: 
+			Interval Size: Small
+				Result: 24.00000000000000000000
+				Time: 0.000079s
+			Interval Size: Big
+				Result: 15300.00000000000000000000
+				Time: 0.000080s
+		High precision: 
+			Interval Size: Small
+				Result: 24.00000000000000000000
+				Time: 0.000150s
+			Interval Size: Big
+				Result: 15300.00000000000000000000
+				Time: 0.000099s
+	3 threads:
+		Low precision: 
+			Interval Size: Small
+				Result: 24.00000000000000000000
+				Time: 0.000176s
+			Interval Size: Big
+				Result: 15300.00000000000000000000
+				Time: 0.000091s
+		Medium precision: 
+			Interval Size: Small
+				Result: 24.00000000000000000000
+				Time: 0.000162s
+			Interval Size: Big
+				Result: 15300.00000000000000000000
+				Time: 0.000094s
+		High precision: 
+			Interval Size: Small
+				Result: 24.00000000000000000000
+				Time: 0.000084s
+			Interval Size: Big
+				Result: 15300.00000000000000000000
+				Time: 0.000090s
+	4 threads:
+		Low precision: 
+			Interval Size: Small
+				Result: 24.00000000000000000000
+				Time: 0.000174s
+			Interval Size: Big
+				Result: 15300.00000000000000000000
+				Time: 0.000092s
+		Medium precision: 
+			Interval Size: Small
+				Result: 24.00000000000000000000
+				Time: 0.000145s
+			Interval Size: Big
+				Result: 15300.00000000000000000000
+				Time: 0.000131s
+		High precision: 
+			Interval Size: Small
+				Result: 24.00000000000000000000
+				Time: 0.000169s
+			Interval Size: Big
+				Result: 15300.00000000000000000000
+				Time: 0.000123s
+	5 threads:
+		Low precision: 
+			Interval Size: Small
+				Result: 24.00000000000000000000
+				Time: 0.000167s
+			Interval Size: Big
+				Result: 15300.00000000000000000000
+				Time: 0.000118s
+		Medium precision: 
+			Interval Size: Small
+				Result: 24.00000000000000000000
+				Time: 0.000164s
+			Interval Size: Big
+				Result: 15300.00000000000000000000
+				Time: 0.000164s
+		High precision: 
+			Interval Size: Small
+				Result: 24.00000000000000000000
+				Time: 0.000180s
+			Interval Size: Big
+				Result: 15300.00000000000000000000
+				Time: 0.000064s
+	6 threads:
+		Low precision: 
+			Interval Size: Small
+				Result: 24.00000000000000000000
+				Time: 0.000160s
+			Interval Size: Big
+				Result: 15300.00000000000000000000
+				Time: 0.000161s
+		Medium precision: 
+			Interval Size: Small
+				Result: 24.00000000000000000000
+				Time: 0.000096s
+			Interval Size: Big
+				Result: 15300.00000000000000000000
+				Time: 0.000127s
+		High precision: 
+			Interval Size: Small
+				Result: 24.00000000000000000000
+				Time: 0.000096s
+			Interval Size: Big
+				Result: 15300.00000000000000000000
+				Time: 0.000159s
+	7 threads:
+		Low precision: 
+			Interval Size: Small
+				Result: 24.00000000000000000000
+				Time: 0.000153s
+			Interval Size: Big
+				Result: 15300.00000000000000000000
+				Time: 0.000149s
+		Medium precision: 
+			Interval Size: Small
+				Result: 24.00000000000000000000
+				Time: 0.000148s
+			Interval Size: Big
+				Result: 15300.00000000000000000000
+				Time: 0.000145s
+		High precision: 
+			Interval Size: Small
+				Result: 24.00000000000000000000
+				Time: 0.000137s
+			Interval Size: Big
+				Result: 15300.00000000000000000000
+				Time: 0.000185s
+	8 threads:
+		Low precision: 
+			Interval Size: Small
+				Result: 24.00000000000000000000
+				Time: 0.000152s
+			Interval Size: Big
+				Result: 15300.00000000000000000000
+				Time: 0.000127s
+		Medium precision: 
+			Interval Size: Small
+				Result: 24.00000000000000000000
+				Time: 0.002881s
+			Interval Size: Big
+				Result: 15300.00000000000000000000
+				Time: 0.000118s
+		High precision: 
+			Interval Size: Small
+				Result: 24.00000000000000000000
+				Time: 0.000115s
+			Interval Size: Big
+				Result: 15300.00000000000000000000
+				Time: 0.000149s
+Função (b):
+	1 threads:
+		Low precision: 
+				Result: 0.70581897703245788378
+				Time: 0.000201s
+		Medium precision: 
+				Result: 0.70364779887701478511
+				Time: 0.000982s
+		High precision: 
+				Result: 0.70364760900101908092
+				Time: 0.339100s
+	2 threads:
+		Low precision: 
+				Result: 0.70581897703245788378
+				Time: 0.000238s
+		Medium precision: 
+				Result: 0.70364779887701478511
+				Time: 0.000509s
+		High precision: 
+				Result: 0.70364760900101908092
+				Time: 0.334132s
+	3 threads:
+		Low precision: 
+				Result: 0.70581897703245788378
+				Time: 0.000275s
+		Medium precision: 
+				Result: 0.70364779887701478511
+				Time: 0.001191s
+		High precision: 
+				Result: 0.70364760900101908092
+				Time: 0.335742s
+	4 threads:
+		Low precision: 
+				Result: 0.70581897703245788378
+				Time: 0.000207s
+		Medium precision: 
+				Result: 0.70364779887701478511
+				Time: 0.001199s
+		High precision: 
+				Result: 0.70364760900101908092
+				Time: 0.336811s
+	5 threads:
+		Low precision: 
+				Result: 0.70581897703245788378
+				Time: 0.000128s
+		Medium precision: 
+				Result: 0.70364779887701478511
+				Time: 0.000507s
+		High precision: 
+				Result: 0.70364760900101908092
+				Time: 0.329067s
+	6 threads:
+		Low precision: 
+				Result: 0.70581897703245788378
+				Time: 0.000249s
+		Medium precision: 
+				Result: 0.70364779887701478511
+				Time: 0.001231s
+		High precision: 
+				Result: 0.70364760900101908092
+				Time: 0.339561s
+	7 threads:
+		Low precision: 
+				Result: 0.70581897703245788378
+				Time: 0.000252s
+		Medium precision: 
+				Result: 0.70364779887701478511
+				Time: 0.001186s
+		High precision: 
+				Result: 0.70364760900101908092
+				Time: 0.333817s
+	8 threads:
+		Low precision: 
+				Result: 0.70581897703245788378
+				Time: 0.000106s
+		Medium precision: 
+				Result: 0.70364779887701478511
+				Time: 0.000911s
+		High precision: 
+				Result: 0.70364760900101908092
+				Time: 0.336620s
+Função (c):
+	1 threads:
+		Low precision: 
+			Interval Size: Small
+				Result: 73.13478706141620477865
+				Time: 0.000152s
+			Interval Size: Big
+				Result: 3000001.92681893659755587578
+				Time: 0.004103s
+		Medium precision: 
+			Interval Size: Small
+				Result: 73.15271852592206869303
+				Time: 0.013133s
+			Interval Size: Big
+				Result: 3000002.46446893922984600067
+				Time: 0.167706s
+		High precision: 
+			Interval Size: Small
+				Result: 73.15271966586487906170
+				Time: 4.813187s
+			Interval Size: Big
+				Result: 3000002.46459956979379057884
+				Time: 192.974675s
+	2 threads:
+		Low precision: 
+			Interval Size: Small
+				Result: 73.13478706141620477865
+				Time: 0.000295s
+			Interval Size: Big
+				Result: 3000001.92681893659755587578
+				Time: 0.006645s
+		Medium precision: 
+			Interval Size: Small
+				Result: 73.15271852592206869303
+				Time: 0.010124s
+			Interval Size: Big
+				Result: 3000002.46446893922984600067
+				Time: 0.170260s
+		High precision: 
+			Interval Size: Small
+				Result: 73.15271966586487906170
+				Time: 4.763436s
+			Interval Size: Big
+				Result: 3000002.46459956979379057884
+				Time: 193.979621s
+	3 threads:
+		Low precision: 
+			Interval Size: Small
+				Result: 73.13478706141620477865
+				Time: 0.000167s
+			Interval Size: Big
+				Result: 3000001.92681893659755587578
+				Time: 0.007493s
+		Medium precision: 
+			Interval Size: Small
+				Result: 73.15271852592206869303
+				Time: 0.005489s
+			Interval Size: Big
+				Result: 3000002.46446893922984600067
+				Time: 0.164809s
+		High precision: 
+			Interval Size: Small
+				Result: 73.15271966586487906170
+				Time: 4.652641s
+			Interval Size: Big
+	4 threads:
+		Low precision: 
+			Interval Size: Small
+				Result: 73.13478706141620477865
+				Time: 0.000231s
+			Interval Size: Big
+				Result: 3000001.92681893659755587578
+				Time: 0.005482s
+		Medium precision: 
+			Interval Size: Small
+				Result: 73.15271852592206869303
+				Time: 0.008001s
+			Interval Size: Big
+				Result: 3000002.46446893922984600067
+				Time: 0.162629s
+		High precision: 
+			Interval Size: Small
+				Result: 73.15271966586487906170
+				Time: 4.749503s
+			Interval Size: Big
+				Result: 3000002.46459956979379057884
+				Time: 196.113584s
+	5 threads:
+		Low precision: 
+			Interval Size: Small
+				Result: 73.13478706141620477865
+				Time: 0.000163s
+			Interval Size: Big
+				Result: 3000001.92681893659755587578
+				Time: 0.003392s
+		Medium precision: 
+			Interval Size: Small
+				Result: 73.15271852592206869303
+				Time: 0.005237s
+			Interval Size: Big
+				Result: 3000002.46446893922984600067
+				Time: 0.163295s
+		High precision: 
+			Interval Size: Small
+				Result: 73.15271966586487906170
+				Time: 4.751469s
+			Interval Size: Big
+				Result: 3000002.46459956979379057884
+				Time: 197.768038s
+	6 threads:
+		Low precision: 
+			Interval Size: Small
+				Result: 73.13478706141620477865
+				Time: 0.000353s
+			Interval Size: Big
+				Result: 3000001.92681893659755587578
+				Time: 0.007536s
+		Medium precision: 
+			Interval Size: Small
+				Result: 73.15271852592206869303
+				Time: 0.007794s
+			Interval Size: Big
+				Result: 3000002.46446893922984600067
+				Time: 0.174409s
+		High precision: 
+			Interval Size: Small
+				Result: 73.15271966586487906170
+				Time: 4.961701s
+			Interval Size: Big
+				Result: 3000002.46459956979379057884
+				Time: 198.990968s
+	7 threads:
+		Low precision: 
+			Interval Size: Small
+				Result: 73.13478706141620477865
+				Time: 0.000136s
+			Interval Size: Big
+				Result: 3000001.92681893659755587578
+				Time: 0.006165s
+		Medium precision: 
+			Interval Size: Small
+				Result: 73.15271852592206869303
+				Time: 0.007945s
+			Interval Size: Big
+				Result: 3000002.46446893922984600067
+				Time: 0.190179s
+		High precision: 
+			Interval Size: Small
+				Result: 73.15271966586487906170
+				Time: 4.769994s
+			Interval Size: Big
+				Result: 3000002.46459956979379057884
+				Time: 195.160040s
+8 threads:
+		Low precision: 
+			Interval Size: Small
+				Result: 73.13478706141620477865
+				Time: 0.000374s
+			Interval Size: Big
+				Result: 3000001.92681893659755587578
+				Time: 0.003607s
+		Medium precision: 
+			Interval Size: Small
+				Result: 73.15271852592206869303
+				Time: 0.009122s
+			Interval Size: Big
+				Result: 3000002.46446893922984600067
+				Time: 0.171214s
+		High precision: 
+			Interval Size: Small
+				Result: 73.15271966586487906170
+				Time: 4.768381s
+			Interval Size: Big
+				Result: 3000002.46459956979379057884
+				Time: 195.992572s
+Função (d):
+	1 threads:
+		Low precision: 
+			Interval Size: Small
+				Result: 0.04011028501927693668
+				Time: 0.000075s
+			Interval Size: Big
+				Result: 0.37720975122953426251
+				Time: 0.001497s
+		Medium precision: 
+			Interval Size: Small
+				Result: 0.03982974269249606181
+				Time: 0.000911s
+			Interval Size: Big
+				Result: 0.37513127766180032197
+				Time: 0.044105s
+		High precision: 
+			Interval Size: Small
+				Result: 0.03982971334966367571
+				Time: 0.700207s
+			Interval Size: Big
+				Result: 0.37513119728075539072
+				Time: 42.115985s
+	2 threads:
+		Low precision: 
+			Interval Size: Small
+				Result: 0.04011028501927693668
+				Time: 0.000112s
+			Interval Size: Big
+				Result: 0.37720975122953426251
+				Time: 0.000917s
+		Medium precision: 
+			Interval Size: Small
+				Result: 0.03982974269249606181
+				Time: 0.000955s
+			Interval Size: Big
+				Result: 0.37513127766180032197
+				Time: 0.047091s
+		High precision: 
+			Interval Size: Small
+				Result: 0.03982971334966367571
+				Time: 0.613103s
+			Interval Size: Big
+				Result: 0.37513119728075539072
+				Time: 42.461340s
+	3 threads:
+		Low precision: 
+			Interval Size: Small
+				Result: 0.04011028501927693668
+				Time: 0.000094s
+			Interval Size: Big
+				Result: 0.37720975122953426251
+				Time: 0.000546s
+		Medium precision: 
+			Interval Size: Small
+				Result: 0.03982974269249606181
+				Time: 0.001931s
+			Interval Size: Big
+				Result: 0.37513127766180032197
+				Time: 0.050803s
+		High precision: 
+			Interval Size: Small
+				Result: 0.03982971334966367571
+				Time: 0.741659s
+			Interval Size: Big
+				Result: 0.37513119728075539072
+				Time: 43.179035s
+	4 threads:
+		Low precision: 
+			Interval Size: Small
+				Result: 0.04011028501927693668
+				Time: 0.000089s
+			Interval Size: Big
+				Result: 0.37720975122953426251
+				Time: 0.001064s
+		Medium precision: 
+			Interval Size: Small
+				Result: 0.03982974269249606181
+				Time: 0.001963s
+			Interval Size: Big
+				Result: 0.37513127766180032197
+				Time: 0.048666s
+		High precision: 
+			Interval Size: Small
+				Result: 0.03982971334966367571
+				Time: 0.761010s
+			Interval Size: Big
+				Result: 0.37513119728075539072
+				Time: 41.971430s
+	5 threads:
+		Low precision: 
+			Interval Size: Small
+				Result: 0.04011028501927693668
+				Time: 0.000225s
+			Interval Size: Big
+				Result: 0.37720975122953426251
+				Time: 0.001305s
+		Medium precision: 
+			Interval Size: Small
+				Result: 0.03982974269249606181
+				Time: 0.001936s
+			Interval Size: Big
+				Result: 0.37513127766180032197
+				Time: 0.054363s
+		High precision: 
+			Interval Size: Small
+				Result: 0.03982971334966367571
+				Time: 0.709602s
+			Interval Size: Big
+				Result: 0.37513119728075539072
+				Time: 42.198294s
+	6 threads:
+		Low precision: 
+			Interval Size: Small
+				Result: 0.04011028501927693668
+				Time: 0.000067s
+			Interval Size: Big
+				Result: 0.37720975122953426251
+				Time: 0.001319s
+		Medium precision: 
+			Interval Size: Small
+				Result: 0.03982974269249606181
+				Time: 0.001976s
+			Interval Size: Big
+				Result: 0.37513127766180032197
+				Time: 0.047808s
+		High precision: 
+			Interval Size: Small
+				Result: 0.03982971334966367571
+				Time: 0.705249s
+			Interval Size: Big
+				Result: 0.37513119728075539072
+				Time: 43.598266s
+	7 threads:
+		Low precision: 
+			Interval Size: Small
+				Result: 0.04011028501927693668
+				Time: 0.000124s
+			Interval Size: Big
+				Result: 0.37720975122953426251
+				Time: 0.001300s
+		Medium precision: 
+			Interval Size: Small
+				Result: 0.03982974269249606181
+				Time: 0.001941s
+			Interval Size: Big
+				Result: 0.37513127766180032197
+				Time: 0.055279s
+		High precision: 
+			Interval Size: Small
+				Result: 0.03982971334966367571
+				Time: 0.704473s
+			Interval Size: Big
+				Result: 0.37513119728075539072
+				Time: 42.135721s
+	8 threads:
+		Low precision: 
+			Interval Size: Small
+				Result: 0.04011028501927693668
+				Time: 0.000217s
+			Interval Size: Big
+				Result: 0.37720975122953426251
+				Time: 0.001101s
+		Medium precision: 
+			Interval Size: Small
+				Result: 0.03982974269249606181
+				Time: 0.001956s
+			Interval Size: Big
+				Result: 0.37513127766180032197
+				Time: 0.057693s
+		High precision: 
+			Interval Size: Small
+				Result: 0.03982971334966367571
+				Time: 0.707164s
+			Interval Size: Big
+				Result: 0.37513119728075539072
+				Time: 42.992944s
