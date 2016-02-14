@@ -151,7 +151,7 @@ void* elevator(void* args) {
     fElevator = fopen(buffer, "w");
     fprintf(fElevator, "%s\n", buffer);
 
-    if (TAG_DEBUG) printf("(%d) começar sa porra\n", p->id);
+    if (TAG_DEBUG) printf("(%d) começar sa bobba\n", p->id);
 
     targetFloor = getFloorFree(p->id, p->f);
     while (targetFloor != -1 || !finishedInputs) {
