@@ -21,9 +21,17 @@ void init(int N, int M, int C, int floors[MAX_ELEVATORS]) {
 int main(int argc, char const *argv[]) {
 
     FILE *arq;
-    int floors[MAX_ELEVATORS], i, j, peopleOnFloor, valorLouco;
+    int floors[MAX_ELEVATORS], i, j, peopleOnFloor, valorLouco, inputFileNumber;
+    char buffer[10];
 
-    arq = fopen("1.in", "r+");
+    if (argc < 2) {
+        printf("Usage: <input file number>\n");
+        return 4;
+    }
+    inputFileNumber = atoi(argv[1]) | 1;
+
+    snprintf(buffer, sizeof(char) * 10, "%d.in", inputFileNumber);
+    arq = fopen(buffer, "r+");
 
     if (!arq) {
         printf("Error. File not found.\n");

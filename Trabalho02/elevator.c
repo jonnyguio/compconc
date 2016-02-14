@@ -18,7 +18,7 @@ void insertQ(queue *q, int val) {
         q->size++;
     }
     else {
-        printf("Queue is full\n");
+        if (TAG_DEBUG) printf("Queue is full\n");
     }
 }
 
@@ -133,43 +133,45 @@ void closerSort(int teste[MAX_CAPACITY], int lenght, int start) {
 void* elevator(void* args) {
     params *p;
     int targetFloor, path[MAX_CAPACITY], i, j;
-    char buffer[20];
+    char buffer[30];
 
     p = (params *) args;
 
     printf("Thread: %d\tFloor: %d\n", p->id, p->floor);
     targetFloor = getFloorFree(p->id, p->floor);
 
-    snprintf(buffer, sizeof(char) * 20, "elevator%d.txt", p->id);
+    snprintf(buffer, sizeof(char) * 30, "outputs/elevator%d.txt", p->id);
     fElevators[p->id] = fopen(buffer, "w+");
     while (targetFloor != -1 || !finishedInputs) {
-        fprintf(fElevators[p->id], "Vou para: %d\n", targetFloor);
-        while (p->capacity < C && floorsReqs[targetFloor].size > 0) {
-            floorsReqs[targetFloor].size--;
-            path[p->capacity] = removeQ(&floorsReqs[targetFloor].people);
-            p->capacity++;
-        }
-        if (TAG_DEBUG) printf("(%d) -Gettin lock of: %d\n", p->id, targetFloor);
-        pthread_mutex_lock(&floorsMutex[targetFloor]);
-        floorsReqs[targetFloor].inUse = 0;
-        pthread_mutex_unlock(&floorsMutex[targetFloor]);
-        if (TAG_DEBUG) printf("(%d) -Dropped lock of: %d\n", p->id, targetFloor);
-
-        closerSort( path, p->capacity, targetFloor);
-
-        if (TAG_DEBUG) { for (i = 0; i < p->capacity; i++) printf("%d ", path[i]); printf("\n"); }
-
-        while (p->capacity > 0) {
-            i = 0;
-            p->floor = path[0];
-            while (p->floor == path[0] && p->capacity - i > 0) {
-                for (j = 0; j < p->capacity; j++) {
-                    path[j] = path[j + 1];
-                }
-                i++;
+        if (targetFloor != -1) {
+            fprintf(fElevators[p->id], "Vou para: %d\n", targetFloor);
+            while (p->capacity < C && floorsReqs[targetFloor].size > 0) {
+                floorsReqs[targetFloor].size--;
+                path[p->capacity] = removeQ(&floorsReqs[targetFloor].people);
+                p->capacity++;
             }
-            fprintf(fElevators[p->id],"Deixei %d pessoas no andar %d.\n", i, p->floor);
-            p->capacity -= i;
+            if (TAG_DEBUG) printf("(%d) -Gettin lock of: %d\n", p->id, targetFloor);
+            pthread_mutex_lock(&floorsMutex[targetFloor]);
+            floorsReqs[targetFloor].inUse = 0;
+            pthread_mutex_unlock(&floorsMutex[targetFloor]);
+            if (TAG_DEBUG) printf("(%d) -Dropped lock of: %d\n", p->id, targetFloor);
+
+            closerSort( path, p->capacity, targetFloor);
+
+            if (TAG_DEBUG) { for (i = 0; i < p->capacity; i++) printf("%d ", path[i]); printf("\n"); }
+
+            while (p->capacity > 0) {
+                i = 0;
+                p->floor = path[0];
+                while (p->floor == path[0] && p->capacity - i > 0) {
+                    for (j = 0; j < p->capacity; j++) {
+                        path[j] = path[j + 1];
+                    }
+                    i++;
+                }
+                fprintf(fElevators[p->id],"Deixei %d pessoas no andar %d.\n", i, p->floor);
+                p->capacity -= i;
+            }
         }
         targetFloor = getFloorFree(p->id, p->floor);
     }
