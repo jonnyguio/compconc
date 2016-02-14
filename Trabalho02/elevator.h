@@ -1,7 +1,7 @@
 #define MAX_ELEVATORS 100
 #define MAX_FLOORS 100
 #define MAX_CAPACITY 20
-#define TAG_DEBUG 1
+#define TAG_DEBUG 0
 
 
 typedef struct _params {
@@ -17,7 +17,7 @@ typedef struct _req {
     queue people;
 } req;
 
-extern int N, M, C;
+extern int N, M, C, finishedInputs;
 extern req *floorsReqs;
 
 void* elevator(void* args);
@@ -29,4 +29,6 @@ int removeQ(queue *q);
 void printQueue(queue *q);
 void freeQueue(queue *q);
 
-extern pthread_mutex_t *floorsMutex;
+extern pthread_mutex_t floorsMutex[MAX_ELEVATORS];
+
+extern FILE *fElevators[MAX_ELEVATORS];

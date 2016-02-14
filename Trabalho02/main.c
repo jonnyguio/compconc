@@ -54,7 +54,6 @@ int main(int argc, char const *argv[]) {
         floorsReqs[i].size = 0;
     }
 
-    floorsMutex = (pthread_mutex_t *) malloc(sizeof(pthread_mutex_t) * N);
     for (i = 0; i < N; i++) {
         printf("%p\n", &floorsMutex[i]);
         pthread_mutex_init(&floorsMutex[i], NULL);
@@ -78,6 +77,7 @@ int main(int argc, char const *argv[]) {
 //    free(floorsReqs);
 //    free(floorsMutex);
 
+    finishedInputs = 1;
     fclose(arq);
 
     pthread_exit(NULL);

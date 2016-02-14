@@ -1,0 +1,19 @@
+Vou para: 0
+Deixei 1 pessoas no andar 1.
+Deixei 1 pessoas no andar 2.
+Deixei 2 pessoas no andar 3.
+Deixei 2 pessoas no andar 4.
+Vou para: 4
+Deixei 2 pessoas no andar 1.
+Deixei 1 pessoas no andar 0.
+Vou para: 1
+Deixei 2 pessoas no andar 0.
+Deixei 1 pessoas no andar 2.
+Deixei 1 pessoas no andar 3.
+Vou para: 2
+Deixei 1 pessoas no andar 1.
+Deixei 1 pessoas no andar 3.
+Deixei 4 pessoas no andar 4.
+Vou para: 2
+Deixei 1 pessoas no andar 3.
+Deixei 1 pessoas no andar 0.
