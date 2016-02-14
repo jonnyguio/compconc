@@ -1,7 +1,7 @@
 CC = gcc
 CFLAGS = -Wall -pthread
 MAIN = main.out
-SRCS = sources/elevator.c sources/main.c
+SRCS = elevator.c main.c
 OBJS = $(SRCS:.c=.o)
 
 .PHONY: depend clean
