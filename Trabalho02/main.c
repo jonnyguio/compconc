@@ -52,16 +52,15 @@ int main(int argc, char const *argv[]) {
     for (i = 0; i < N; i++) {
         floorsReqs[i].inUse = 0;
         floorsReqs[i].size = 0;
-        printf("%d ", floorsReqs[i].size);
     }
-    printf("\n");
 
     floorsMutex = (pthread_mutex_t *) malloc(sizeof(pthread_mutex_t) * N);
     for (i = 0; i < N; i++) {
+        printf("%p\n", &floorsMutex[i]);
         pthread_mutex_init(&floorsMutex[i], NULL);
     }
 
-    //init(N, M, C, floors);
+    init(N, M, C, floors);
 
     for (i = 0; i < N; i++) {
         pthread_mutex_lock(&floorsMutex[i]);
@@ -72,26 +71,15 @@ int main(int argc, char const *argv[]) {
         for (j = 0; j < peopleOnFloor; j++) {
             fscanf(arq, "%d", &valorLouco);
             insertQ(&floorsReqs[i].people, valorLouco);
-            printf("%d ", valorLouco);
         }
-        printf("\n");
-        printQueue(&floorsReqs[0].people);
         pthread_mutex_unlock(&floorsMutex[i]);
     }
 
-    printf("\n\n");
-
-    for (i = 0; i < N; i++) {
-        printf("%d\t", i, &floorsReqs[i].people);
-        printQueue(&floorsReqs[i].people);
-    }
-
-    free(floorsReqs);
-    free(floorsMutex);
+//    free(floorsReqs);
+//    free(floorsMutex);
 
     fclose(arq);
 
-    //pthread_exit(NULL);
+    pthread_exit(NULL);
 
-    return 0;
 }

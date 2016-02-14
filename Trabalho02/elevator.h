@@ -1,6 +1,8 @@
 #define MAX_ELEVATORS 100
 #define MAX_FLOORS 100
 #define MAX_CAPACITY 20
+#define TAG_DEBUG 1
+
 
 typedef struct _params {
     int id, floor, capacity;
