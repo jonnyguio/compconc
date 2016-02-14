@@ -1,5 +1,5 @@
 CC = gcc
-CFLAGS = -Wall -pthread
+CFLAGS = -Wall -lpthread
 MAIN = main.out
 SRCS = elevator.c main.c
 OBJS = $(SRCS:.c=.o)
@@ -7,7 +7,7 @@ OBJS = $(SRCS:.c=.o)
 .PHONY: depend clean
 
 all: $(MAIN)
-	@echo "Simple compiler named mycc has been compiled"
+	@echo "Program has been compiled using $(CC) compiler"
 
 $(MAIN): $(OBJS)
 	$(CC) $(CFLAGS) $(INCLUDES) -o $(MAIN) $(OBJS) $(LFLAGS) $(LIBS)

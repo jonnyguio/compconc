@@ -160,33 +160,36 @@ void* elevator(void* args) {
 
     p = (params *) args;
 
-    printf("Thread: %d\tFloor: %d\n", p->id, p->f);
+    if (TAG_DEBUG) printf("Thread: %d\tFloor: %d\n", p->id, p->f);
 
     // Inicialização de arquivos
     sn = snprintf(buffer, sizeof(char) * 41, "outputs/elevator%d.txt", p->id);
     fElevator = fopen(buffer, "w");
     fprintf(fElevator, "%s\n", buffer);
 
-    if (TAG_DEBUG) printf("(%d) começar sa borra\n", p->id);
+    if (TAG_DEBUG) printf("(%d) começar sa bobba\n", p->id);
 
-    targetFloor = getFloorFree(p->id, p->f);
-    while (targetFloor != -1 || !finishedInputs) {
-        if (isInRange(targetFloor, 0, N - 1)) {
+    targetFloor = getFloorFree(p->id, p->f); // pega qual andar deve ir
+    while (targetFloor != -1 || !finishedInputs) { // Enquanto não há requisições e a thread principal não acabou
+
+        if (isInRange(targetFloor, 0, N - 1)) { // Se o andar fornecido for possível
             fprintf(fElevator, "Vou para: %d\n", targetFloor);
-            while (p->capacity < C && floorsReqs[targetFloor].size > 0) {
+
+            while (p->capacity < C && floorsReqs[targetFloor].size > 0) { // Pega gente até capacidade ou até acabar
                 path[p->capacity] = removeQ(&floorsReqs[targetFloor]);
                 p->capacity++;
             }
+
             if (TAG_DEBUG) printf("(%d) -Gettin lock of: %d\n", p->id, targetFloor);
             pthread_mutex_lock(&floorsMutex[targetFloor]);
-            floorsReqs[targetFloor].inUse = 0;
+            floorsReqs[targetFloor].inUse = 0; // avisa que deixou de usar aquele andar
             pthread_mutex_unlock(&floorsMutex[targetFloor]);
-            if (TAG_DEBUG) printf("(%d) -Dropped lock of: %d\n", p->id, targetFloor);
+            if (TAG_DEBUG) printf("g(%d) -Dropped lock of: %d\n", p->id, targetFloor);
 
             //closerSort(path, p->capacity, targetFloor);
             if (TAG_DEBUG) { for (i = 0; i < p->capacity; i++) printf("%d ", path[i]); printf("\n"); }
 
-            while (p->capacity > 0) {
+            while (p->capacity > 0) { // Caminha atualizando a cada passo qual o próximo andar que ele deve ir.
                 closerSort(path, p->capacity, p->f);
                 i = 0;
                 p->f = path[0];
@@ -202,7 +205,7 @@ void* elevator(void* args) {
         }
         targetFloor = getFloorFree(p->id, p->f);
     }
-    printf("(%d) Thread ended\n", p->id);
+    if (TAG_DEBUG) printf("(%d) Thread ended\n", p->id);
 
     fclose(fElevator);
     free(p);

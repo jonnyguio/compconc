@@ -1,0 +1,22 @@
+Input: inputs/4.in
+Floors: 20	Elevators: 16	Capacity: 15
+People on floor(0): 14
+People on floor(1): 12
+People on floor(2): 5
+People on floor(3): 21
+People on floor(4): 16
+People on floor(5): 29
+People on floor(6): 27
+People on floor(7): 28
+People on floor(8): 28
+People on floor(9): 19
+People on floor(10): 4
+People on floor(11): 7
+People on floor(12): 29
+People on floor(13): 20
+People on floor(14): 24
+People on floor(15): 9
+People on floor(16): 25
+People on floor(17): 8
+People on floor(18): 17
+People on floor(19): 26

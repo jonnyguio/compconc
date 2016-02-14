@@ -1,54 +1,21 @@
 outputs/elevator3.txt
-Vou para: 0
-Deixei 1 pessoas no andar 30.
-Deixei 1 pessoas no andar 31.
-Deixei 1 pessoas no andar 41.
-Deixei 1 pessoas no andar 43.
-Deixei 1 pessoas no andar 48.
-Deixei 1 pessoas no andar 49.
-Deixei 1 pessoas no andar 53.
-Deixei 1 pessoas no andar 55.
-Deixei 1 pessoas no andar 59.
-Deixei 1 pessoas no andar 15.
-Deixei 1 pessoas no andar 12.
-Deixei 1 pessoas no andar 10.
-Vou para: 7
-Deixei 1 pessoas no andar 11.
-Deixei 1 pessoas no andar 8.
-Deixei 1 pessoas no andar 2.
-Deixei 1 pessoas no andar 19.
-Deixei 1 pessoas no andar 22.
-Deixei 1 pessoas no andar 34.
-Deixei 1 pessoas no andar 40.
-Deixei 1 pessoas no andar 49.
-Deixei 1 pessoas no andar 57.
-Deixei 1 pessoas no andar 60.
-Deixei 1 pessoas no andar 66.
-Vou para: 40
-Deixei 1 pessoas no andar 62.
-Deixei 1 pessoas no andar 59.
-Deixei 1 pessoas no andar 55.
-Deixei 1 pessoas no andar 52.
-Deixei 1 pessoas no andar 41.
-Deixei 1 pessoas no andar 35.
-Deixei 1 pessoas no andar 18.
-Deixei 1 pessoas no andar 14.
-Deixei 1 pessoas no andar 13.
-Deixei 2 pessoas no andar 9.
+Vou para: 6
 Deixei 1 pessoas no andar 7.
-Deixei 1 pessoas no andar 1.
-Vou para: 25
+Deixei 2 pessoas no andar 9.
+Deixei 1 pessoas no andar 10.
+Deixei 2 pessoas no andar 12.
+Deixei 1 pessoas no andar 14.
+Deixei 1 pessoas no andar 17.
+Deixei 2 pessoas no andar 19.
+Deixei 1 pessoas no andar 4.
 Deixei 1 pessoas no andar 3.
-Deixei 1 pessoas no andar 13.
-Deixei 1 pessoas no andar 21.
-Deixei 1 pessoas no andar 22.
-Deixei 1 pessoas no andar 26.
-Deixei 1 pessoas no andar 30.
-Deixei 1 pessoas no andar 44.
-Deixei 1 pessoas no andar 46.
-Deixei 1 pessoas no andar 55.
-Deixei 1 pessoas no andar 58.
-Vou para: 48
-Deixei 1 pessoas no andar 38.
-Deixei 1 pessoas no andar 27.
-Deixei 1 pessoas no andar 15.
+Vou para: 4
+Deixei 1 pessoas no andar 14.
+Vou para: 11
+Deixei 1 pessoas no andar 12.
+Deixei 1 pessoas no andar 7.
+Deixei 1 pessoas no andar 5.
+Deixei 1 pessoas no andar 3.
+Deixei 1 pessoas no andar 2.
+Deixei 1 pessoas no andar 0.
+Deixei 1 pessoas no andar 18.

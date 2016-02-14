@@ -1,59 +1,40 @@
 outputs/elevator1.txt
-Vou para: 33
-Deixei 1 pessoas no andar 48.
-Deixei 1 pessoas no andar 52.
-Deixei 1 pessoas no andar 58.
-Deixei 1 pessoas no andar 64.
-Deixei 1 pessoas no andar 44.
-Deixei 1 pessoas no andar 32.
-Deixei 1 pessoas no andar 31.
-Deixei 1 pessoas no andar 28.
+Vou para: 0
+Deixei 1 pessoas no andar 16.
 Deixei 1 pessoas no andar 18.
-Deixei 2 pessoas no andar 16.
+Deixei 1 pessoas no andar 19.
 Deixei 1 pessoas no andar 12.
-Vou para: 19
-Deixei 1 pessoas no andar 12.
-Deixei 1 pessoas no andar 15.
-Deixei 1 pessoas no andar 18.
-Deixei 1 pessoas no andar 25.
-Deixei 1 pessoas no andar 39.
-Deixei 1 pessoas no andar 45.
-Deixei 1 pessoas no andar 62.
-Deixei 1 pessoas no andar 4.
-Vou para: 26
-Deixei 2 pessoas no andar 5.
-Deixei 1 pessoas no andar 6.
-Deixei 1 pessoas no andar 7.
+Deixei 2 pessoas no andar 11.
+Deixei 2 pessoas no andar 9.
 Deixei 1 pessoas no andar 8.
-Deixei 1 pessoas no andar 18.
-Deixei 2 pessoas no andar 19.
-Deixei 1 pessoas no andar 23.
-Deixei 1 pessoas no andar 36.
-Deixei 1 pessoas no andar 57.
-Vou para: 50
-Deixei 1 pessoas no andar 48.
-Deixei 1 pessoas no andar 31.
-Deixei 1 pessoas no andar 13.
-Vou para: 53
-Deixei 1 pessoas no andar 10.
+Deixei 3 pessoas no andar 6.
 Deixei 1 pessoas no andar 4.
-Deixei 1 pessoas no andar 3.
-Deixei 1 pessoas no andar 21.
-Deixei 1 pessoas no andar 28.
-Deixei 1 pessoas no andar 34.
-Deixei 1 pessoas no andar 44.
-Deixei 1 pessoas no andar 48.
-Deixei 2 pessoas no andar 49.
-Deixei 1 pessoas no andar 66.
-Vou para: 62
-Deixei 1 pessoas no andar 59.
-Deixei 1 pessoas no andar 51.
-Deixei 1 pessoas no andar 50.
-Deixei 1 pessoas no andar 49.
-Deixei 2 pessoas no andar 37.
-Deixei 1 pessoas no andar 33.
-Deixei 1 pessoas no andar 32.
-Deixei 1 pessoas no andar 29.
-Deixei 1 pessoas no andar 10.
-Deixei 1 pessoas no andar 6.
 Deixei 1 pessoas no andar 1.
+Vou para: 2
+Deixei 1 pessoas no andar 3.
+Deixei 1 pessoas no andar 6.
+Deixei 1 pessoas no andar 9.
+Deixei 1 pessoas no andar 18.
+Deixei 1 pessoas no andar 19.
+Vou para: 13
+Deixei 2 pessoas no andar 18.
+Deixei 1 pessoas no andar 16.
+Deixei 1 pessoas no andar 14.
+Deixei 2 pessoas no andar 9.
+Deixei 1 pessoas no andar 5.
+Deixei 2 pessoas no andar 4.
+Deixei 2 pessoas no andar 3.
+Deixei 1 pessoas no andar 2.
+Deixei 3 pessoas no andar 1.
+Vou para: 14
+Deixei 1 pessoas no andar 1.
+Deixei 1 pessoas no andar 0.
+Deixei 2 pessoas no andar 3.
+Deixei 2 pessoas no andar 4.
+Deixei 2 pessoas no andar 6.
+Deixei 1 pessoas no andar 8.
+Deixei 2 pessoas no andar 11.
+Deixei 1 pessoas no andar 13.
+Deixei 1 pessoas no andar 15.
+Deixei 1 pessoas no andar 16.
+Deixei 1 pessoas no andar 17.
