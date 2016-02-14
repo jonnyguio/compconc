@@ -5,16 +5,11 @@
 #define TAG_DEBUG 0
 
 typedef struct _params {
-    int id, floor, capacity;
+    int id, f, capacity;
 } params;
 
-typedef struct _queue {
-    int size, array[MAX_PEOPLE];
-} queue;
-
 typedef struct _req {
-    int id, size, inUse;
-    queue people;
+    int id, size, inUse, people[MAX_PEOPLE];
 } req;
 
 extern int N, M, C, finishedInputs;
@@ -23,10 +18,10 @@ extern req *floorsReqs;
 void* elevator(void* args);
 int getFloorsFree();
 
-void initQueue(queue *q);
-void insertQ(queue *q, int val);
-int removeQ(queue *q);
-void printQueue(queue *q);
-void freeQueue(queue *q);
+void insertQ(req *q, int val);
+int removeQ(req *q);
+void printReq(req *q);
+void freeReq(req *q);
 
-extern pthread_mutex_t floorsMutex[MAX_ELEVATORS];
+extern pthread_mutex_t floorsMutex[MAX_FLOORS];
+extern pthread_mutex_t teste;
