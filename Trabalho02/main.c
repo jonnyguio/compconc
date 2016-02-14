@@ -5,25 +5,12 @@
 
 pthread_t threads[MAX_ELEVATORS];
 pthread_mutex_t floorsMutex[MAX_FLOORS];
-params *a;
-
-void init(int N, int M, int C, int floors[MAX_ELEVATORS]) {
-    int i;
-    for (i = 0; i < M; i++) {
-        printf("aqui?\n");
-        a = (params *) malloc(sizeof(params));
-        a->id = i;
-        a->f = floors[i];
-        a->capacity = 0;
-        //pthread_create(&threads[i], NULL, elevator, (void *) a);
-        printf("Thread: %d, Floors: %d\n", a->id, 0);
-    }
-    printf("acabei\n");
-}
+req floorsReqs[MAX_FLOORS];
 
 int main(int argc, char const *argv[]) {
 
     FILE *arq;
+    params *p;
     int elevatorsFloors[MAX_ELEVATORS], i, j, peopleOnFloor, valorLouco, inputFileNumber;
     char buffer[21];
 
@@ -62,22 +49,26 @@ int main(int argc, char const *argv[]) {
         fscanf(arq, "%d", &elevatorsFloors[i]);
     }
 
-    floorsReqs = (req *) malloc(sizeof(int *) * N);
     for (i = 0; i < N; i++) {
         floorsReqs[i].inUse = 0;
         floorsReqs[i].size = 0;
     }
 
     for (i = 0; i < N; i++) {
-        if (TAG_DEBUG) printf("%p\n", &floorsMutex[i]);
         pthread_mutex_init(&floorsMutex[i], NULL);
     }
 
     pthread_mutex_init(&teste, NULL);
 
-    init(N, M, C, elevatorsFloors);
+    for (i = 0; i < M; i++) {
+        p = (params *) malloc(sizeof(params));
+        p->id = i;
+        p->f = elevatorsFloors[i];
+        p->capacity = 0;
+        pthread_create(&threads[i], NULL, elevator, (void *) p);
+    }
 
-    /*for (i = 0; i < N; i++) {
+    for (i = 0; i < N; i++) {
         pthread_mutex_lock(&floorsMutex[i]);
         fscanf(arq, "%d", &peopleOnFloor);
         if (TAG_DEBUG) printf("PeopleOnFloor(%d): %d\n", i, peopleOnFloor);
@@ -85,9 +76,9 @@ int main(int argc, char const *argv[]) {
             fscanf(arq, "%d", &valorLouco);
             insertQ(&floorsReqs[i], valorLouco);
         }
-        if (TAG_DEBUG) printQueue(&floorsReqs[i]);
+        if (TAG_DEBUG) printReq(&floorsReqs[i]);
         pthread_mutex_unlock(&floorsMutex[i]);
-    }*/
+    }
 
 //    free(floorsReqs);
 //    free(floorsMutex);

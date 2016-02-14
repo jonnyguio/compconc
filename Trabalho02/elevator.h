@@ -13,7 +13,7 @@ typedef struct _req {
 } req;
 
 extern int N, M, C, finishedInputs;
-extern req *floorsReqs;
+extern req floorsReqs[MAX_FLOORS];
 
 void* elevator(void* args);
 int getFloorsFree();

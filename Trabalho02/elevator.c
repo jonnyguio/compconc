@@ -4,7 +4,7 @@
 #include <math.h>
 #include "elevator.h"
 
-int N = 0; int M = 0; int C = 0; int finishedInputs = 0; req *floorsReqs = (req *) NULL;
+int N = 0; int M = 0; int C = 0; int finishedInputs = 0;
 
 pthread_mutex_t teste;
 
@@ -135,30 +135,30 @@ void closerSort(int teste[MAX_PEOPLE], int lenght, int start) {
 }
 
 void* elevator(void* args) {
+
     FILE *fElevator;
     params *p;
-    int targetFloor, path[MAX_PEOPLE], i, j, sn;
+
+    int path[MAX_PEOPLE], targetFloor, i, j, sn;
     char buffer[41];
 
     p = (params *) args;
 
     printf("Thread: %d\tFloor: %d\n", p->id, p->f);
 
-    //pthread_mutex_lock(&teste);
-    /*sn = snprintf(buffer, sizeof(char) * 41, "outputs/elevator%d.txt", p->id);
-    printf("(%d) %d\n", p->id, sn);
+    sn = snprintf(buffer, sizeof(char) * 41, "outputs/elevator%d.txt", p->id);
     fElevator = fopen(buffer, "w");
-    fprintf(fElevator, "%s\n", buffer);*/
+    fprintf(fElevator, "%s\n", buffer);
 
-    //printf("(%d) começar sa porra\n", p->id);
+    printf("(%d) começar sa porra\n", p->id);
 
-    /*targetFloor = getFloorFree(p->id, p->f);
+    targetFloor = getFloorFree(p->id, p->f);
     while (targetFloor != -1 || !finishedInputs) {
         if (isInRange(targetFloor, 0, N - 1)) {
             fprintf(fElevator, "Vou para: %d\n", targetFloor);
             while (p->capacity < C && floorsReqs[targetFloor].size > 0) {
                 floorsReqs[targetFloor].size--;
-                path[p->capacity] = removeQ(&floorsReqs[targetFloor].people);
+                path[p->capacity] = removeQ(&floorsReqs[targetFloor]);
                 p->capacity++;
             }
             if (TAG_DEBUG) printf("(%d) -Gettin lock of: %d\n", p->id, targetFloor);
@@ -185,12 +185,10 @@ void* elevator(void* args) {
             }
         }
         targetFloor = getFloorFree(p->id, p->f);
-    }*/
+    }
     printf("(%d) acabou né\n", p->id);
 
-//    pthread_mutex_unlock(&teste);
-
-    //fclose(fElevator);
+    fclose(fElevator);
     free(p);
 
     pthread_exit(NULL);

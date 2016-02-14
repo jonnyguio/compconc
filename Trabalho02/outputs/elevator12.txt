@@ -1,0 +1,13 @@
+outputs/elevator12.txt
+Vou para: 7
+Deixei 1 pessoas no andar 8.
+Deixei 1 pessoas no andar 5.
+Deixei 1 pessoas no andar 9.
+Deixei 1 pessoas no andar 4.
+Deixei 1 pessoas no andar 3.
+Deixei 2 pessoas no andar 12.
+Deixei 2 pessoas no andar 13.
+Deixei 1 pessoas no andar 14.
+Deixei 1 pessoas no andar 0.
+Deixei 2 pessoas no andar 16.
+Deixei 1 pessoas no andar 17.
