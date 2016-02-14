@@ -1,10 +1,14 @@
 CC = gcc
 CFLAGS = -Wall -lpthread
+CFLAGS2 = -Wall
 MAIN = main.out
+TESTE = testGenerator.out
 SRCS = elevator.c main.c
+SRCS2 = testGenerator.c
 OBJS = $(SRCS:.c=.o)
+OBJS2 = $(SRCS2:.c=.o)
 
-.PHONY: depend clean
+.PHONY: depend clean test
 
 all: $(MAIN)
 	@echo "Program has been compiled using $(CC) compiler"
@@ -24,3 +28,7 @@ clean:
 
 depend: $(SRCS)
 	makedepend $(INCLUDES) $^
+
+test: $(SRCS2)
+	@echo "Compiling test generator"
+	$(CC) $(CFLAGS2) $(INCLUDES) -c $< -o $(TESTE)
