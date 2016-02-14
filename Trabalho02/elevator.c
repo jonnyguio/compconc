@@ -45,6 +45,7 @@ int removeQ(req *q) {
         reorder(q);
     }
     else {
+        printf("uer\n");
         val = -1;
     }
     return val;
@@ -150,14 +151,13 @@ void* elevator(void* args) {
     fElevator = fopen(buffer, "w");
     fprintf(fElevator, "%s\n", buffer);
 
-    printf("(%d) começar sa porra\n", p->id);
+    if (TAG_DEBUG) printf("(%d) começar sa porra\n", p->id);
 
     targetFloor = getFloorFree(p->id, p->f);
     while (targetFloor != -1 || !finishedInputs) {
         if (isInRange(targetFloor, 0, N - 1)) {
             fprintf(fElevator, "Vou para: %d\n", targetFloor);
             while (p->capacity < C && floorsReqs[targetFloor].size > 0) {
-                floorsReqs[targetFloor].size--;
                 path[p->capacity] = removeQ(&floorsReqs[targetFloor]);
                 p->capacity++;
             }
@@ -167,11 +167,11 @@ void* elevator(void* args) {
             pthread_mutex_unlock(&floorsMutex[targetFloor]);
             if (TAG_DEBUG) printf("(%d) -Dropped lock of: %d\n", p->id, targetFloor);
 
-            closerSort(path, p->capacity, targetFloor);
-
+            //closerSort(path, p->capacity, targetFloor);
             if (TAG_DEBUG) { for (i = 0; i < p->capacity; i++) printf("%d ", path[i]); printf("\n"); }
 
             while (p->capacity > 0) {
+                closerSort(path, p->capacity, p->f);
                 i = 0;
                 p->f = path[0];
                 while (p->f == path[0] && p->capacity - i > 0) {
@@ -186,7 +186,7 @@ void* elevator(void* args) {
         }
         targetFloor = getFloorFree(p->id, p->f);
     }
-    printf("(%d) acabou né\n", p->id);
+    printf("(%d) Thread ended\n", p->id);
 
     fclose(fElevator);
     free(p);

@@ -71,7 +71,7 @@ int main(int argc, char const *argv[]) {
     for (i = 0; i < N; i++) {
         pthread_mutex_lock(&floorsMutex[i]);
         fscanf(arq, "%d", &peopleOnFloor);
-        if (TAG_DEBUG) printf("PeopleOnFloor(%d): %d\n", i, peopleOnFloor);
+        printf("PeopleOnFloor(%d): %d\n", i, peopleOnFloor);
         for (j = 0; j < peopleOnFloor; j++) {
             fscanf(arq, "%d", &valorLouco);
             insertQ(&floorsReqs[i], valorLouco);

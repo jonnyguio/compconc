@@ -1,0 +1,44 @@
+outputs/elevator18.txt
+Vou para: 32
+Deixei 1 pessoas no andar 51.
+Deixei 1 pessoas no andar 54.
+Deixei 1 pessoas no andar 57.
+Deixei 1 pessoas no andar 60.
+Deixei 1 pessoas no andar 61.
+Deixei 1 pessoas no andar 46.
+Deixei 1 pessoas no andar 42.
+Deixei 1 pessoas no andar 41.
+Deixei 1 pessoas no andar 38.
+Deixei 1 pessoas no andar 35.
+Deixei 1 pessoas no andar 29.
+Deixei 1 pessoas no andar 28.
+Deixei 1 pessoas no andar 27.
+Deixei 1 pessoas no andar 22.
+Deixei 1 pessoas no andar 16.
+Deixei 1 pessoas no andar 11.
+Deixei 1 pessoas no andar 9.
+Vou para: 42
+Deixei 1 pessoas no andar 14.
+Deixei 1 pessoas no andar 20.
+Deixei 1 pessoas no andar 21.
+Deixei 1 pessoas no andar 23.
+Deixei 1 pessoas no andar 28.
+Deixei 1 pessoas no andar 46.
+Deixei 1 pessoas no andar 50.
+Deixei 1 pessoas no andar 65.
+Vou para: 66
+Deixei 1 pessoas no andar 65.
+Deixei 1 pessoas no andar 63.
+Deixei 1 pessoas no andar 54.
+Deixei 1 pessoas no andar 47.
+Deixei 2 pessoas no andar 44.
+Deixei 1 pessoas no andar 43.
+Deixei 1 pessoas no andar 42.
+Deixei 1 pessoas no andar 38.
+Deixei 1 pessoas no andar 34.
+Deixei 1 pessoas no andar 32.
+Deixei 1 pessoas no andar 27.
+Deixei 1 pessoas no andar 26.
+Deixei 1 pessoas no andar 12.
+Deixei 2 pessoas no andar 10.
+Deixei 1 pessoas no andar 6.

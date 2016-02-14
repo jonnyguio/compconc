@@ -1,32 +1,11 @@
 outputs/elevator7.txt
-Vou para: 14
-Deixei 1 pessoas no andar 13.
-Deixei 1 pessoas no andar 16.
-Deixei 1 pessoas no andar 17.
-Deixei 2 pessoas no andar 11.
-Deixei 1 pessoas no andar 8.
-Deixei 1 pessoas no andar 6.
-Deixei 1 pessoas no andar 4.
-Deixei 2 pessoas no andar 3.
-Deixei 1 pessoas no andar 1.
+Vou para: 38
+Deixei 1 pessoas no andar 25.
+Deixei 1 pessoas no andar 26.
+Deixei 1 pessoas no andar 49.
+Deixei 1 pessoas no andar 50.
+Deixei 1 pessoas no andar 60.
+Deixei 1 pessoas no andar 61.
+Deixei 1 pessoas no andar 64.
+Deixei 1 pessoas no andar 65.
 Deixei 1 pessoas no andar 0.
-Vou para: 0
-Deixei 1 pessoas no andar 4.
-Deixei 1 pessoas no andar 6.
-Deixei 2 pessoas no andar 9.
-Deixei 1 pessoas no andar 11.
-Deixei 1 pessoas no andar 12.
-Deixei 1 pessoas no andar 16.
-Vou para: 16
-Deixei 1 pessoas no andar 17.
-Deixei 1 pessoas no andar 15.
-Deixei 1 pessoas no andar 18.
-Deixei 2 pessoas no andar 11.
-Deixei 1 pessoas no andar 10.
-Deixei 1 pessoas no andar 9.
-Deixei 1 pessoas no andar 6.
-Deixei 1 pessoas no andar 5.
-Deixei 1 pessoas no andar 3.
-Deixei 1 pessoas no andar 2.
-Deixei 1 pessoas no andar 1.
-Deixei 1 pessoas no andar -1.
