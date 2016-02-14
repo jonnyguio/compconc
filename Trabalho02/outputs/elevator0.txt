@@ -1,100 +1,97 @@
-Vou para: 3
+outputs/elevator0.txt
+Vou para: 0
+Deixei 1 pessoas no andar 1.
+Deixei 1 pessoas no andar 4.
+Deixei 3 pessoas no andar 6.
+Deixei 1 pessoas no andar 8.
+Deixei 2 pessoas no andar 9.
+Deixei 2 pessoas no andar 11.
+Deixei 1 pessoas no andar 12.
+Deixei 1 pessoas no andar 16.
+Deixei 1 pessoas no andar 18.
+Deixei 1 pessoas no andar 19.
+Vou para: 19
+Deixei 1 pessoas no andar 18.
+Deixei 3 pessoas no andar 17.
+Deixei 1 pessoas no andar 13.
+Deixei 2 pessoas no andar 11.
+Deixei 2 pessoas no andar 10.
+Deixei 1 pessoas no andar 9.
+Deixei 4 pessoas no andar 6.
+Deixei 1 pessoas no andar 2.
+Vou para: 2
+Deixei 1 pessoas no andar 3.
+Deixei 1 pessoas no andar 6.
+Deixei 1 pessoas no andar 9.
+Deixei 1 pessoas no andar 18.
+Deixei 1 pessoas no andar 19.
+Vou para: 19
+Deixei 2 pessoas no andar 17.
+Deixei 2 pessoas no andar 16.
+Deixei 2 pessoas no andar 10.
+Deixei 1 pessoas no andar 7.
+Deixei 1 pessoas no andar 5.
+Deixei 1 pessoas no andar 4.
+Deixei 1 pessoas no andar 3.
 Deixei 1 pessoas no andar 0.
+Vou para: 1
+Deixei 1 pessoas no andar 0.
+Deixei 1 pessoas no andar 2.
+Deixei 1 pessoas no andar 3.
+Deixei 1 pessoas no andar 5.
 Deixei 1 pessoas no andar 7.
 Deixei 1 pessoas no andar 8.
-Deixei 1 pessoas no andar 12.
-Deixei 1 pessoas no andar 30.
-Deixei 2 pessoas no andar 68.
-Vou para: 26
-Deixei 1 pessoas no andar 23.
-Deixei 1 pessoas no andar 35.
-Deixei 1 pessoas no andar 37.
-Deixei 1 pessoas no andar 7.
-Deixei 1 pessoas no andar 46.
-Deixei 1 pessoas no andar 4.
-Deixei 1 pessoas no andar 0.
-Deixei 1 pessoas no andar 60.
-Deixei 1 pessoas no andar 61.
-Deixei 2 pessoas no andar 69.
-Deixei 1 pessoas no andar 70.
-Deixei 1 pessoas no andar 77.
-Deixei 1 pessoas no andar 81.
-Deixei 1 pessoas no andar 85.
-Deixei 1 pessoas no andar 87.
-Vou para: 36
-Deixei 1 pessoas no andar 68.
-Deixei 5 pessoas no andar -1.
-Vou para: 6
-Deixei 10 pessoas no andar -1.
-Deixei 1 pessoas no andar 18.
-Vou para: 18
+Deixei 2 pessoas no andar 9.
 Deixei 1 pessoas no andar 10.
-Deixei 1 pessoas no andar 4.
-Deixei 1 pessoas no andar 87.
-Vou para: 46
-Deixei 1 pessoas no andar 45.
-Deixei 1 pessoas no andar 58.
-Deixei 1 pessoas no andar 31.
-Deixei 1 pessoas no andar 63.
-Deixei 1 pessoas no andar 29.
-Deixei 1 pessoas no andar 28.
-Deixei 1 pessoas no andar 19.
-Deixei 1 pessoas no andar 74.
-Deixei 1 pessoas no andar 18.
-Deixei 1 pessoas no andar 17.
-Deixei 1 pessoas no andar 76.
+Deixei 1 pessoas no andar 13.
 Deixei 1 pessoas no andar 14.
-Deixei 1 pessoas no andar 9.
-Deixei 1 pessoas no andar 87.
-Deixei 1 pessoas no andar 3.
-Deixei 1 pessoas no andar 89.
-Deixei 1 pessoas no andar 3.
-Deixei 1 pessoas no andar 0.
-Vou para: 21
-Deixei 1 pessoas no andar 35.
-Deixei 7 pessoas no andar -1.
-Vou para: 31
-Deixei 1 pessoas no andar 27.
-Deixei 1 pessoas no andar 40.
 Deixei 1 pessoas no andar 17.
-Deixei 1 pessoas no andar 48.
-Deixei 1 pessoas no andar 50.
+Vou para: 17
+Deixei 2 pessoas no andar 16.
+Deixei 1 pessoas no andar 15.
 Deixei 1 pessoas no andar 11.
-Deixei 1 pessoas no andar 55.
-Deixei 1 pessoas no andar 57.
+Deixei 1 pessoas no andar 8.
+Deixei 1 pessoas no andar 3.
+Deixei 1 pessoas no andar 1.
+Deixei 1 pessoas no andar 0.
+Vou para: 3
 Deixei 1 pessoas no andar 5.
-Deixei 1 pessoas no andar 61.
-Deixei 1 pessoas no andar 73.
-Deixei 1 pessoas no andar 76.
-Deixei 1 pessoas no andar 85.
-Deixei 1 pessoas no andar 88.
-Deixei 2 pessoas no andar 89.
-Deixei 1 pessoas no andar 92.
-Deixei 1 pessoas no andar 93.
-Vou para: 64
-Deixei 1 pessoas no andar 66.
-Deixei 1 pessoas no andar 60.
-Deixei 1 pessoas no andar 69.
-Deixei 1 pessoas no andar 55.
-Deixei 1 pessoas no andar 51.
-Deixei 1 pessoas no andar 78.
-Deixei 1 pessoas no andar 82.
-Deixei 1 pessoas no andar 85.
-Deixei 1 pessoas no andar 89.
-Deixei 1 pessoas no andar 36.
-Deixei 1 pessoas no andar 92.
-Deixei 1 pessoas no andar 35.
-Deixei 1 pessoas no andar 29.
-Deixei 2 pessoas no andar 14.
+Deixei 1 pessoas no andar 9.
 Deixei 1 pessoas no andar 12.
-Deixei 1 pessoas no andar 11.
-Deixei 1 pessoas no andar 2.
-Vou para: 75
-Deixei 1 pessoas no andar 12.
-Deixei 1 pessoas no andar -1.
-Vou para: 84
-Deixei 1 pessoas no andar 37.
-Deixei 16 pessoas no andar -1.
-Vou para: 93
 Deixei 1 pessoas no andar 16.
+Deixei 2 pessoas no andar 18.
+Vou para: 18
+Deixei 2 pessoas no andar 19.
+Deixei 1 pessoas no andar 17.
+Deixei 2 pessoas no andar 13.
+Deixei 2 pessoas no andar 11.
+Deixei 1 pessoas no andar 8.
+Deixei 1 pessoas no andar 6.
+Deixei 1 pessoas no andar 4.
+Deixei 1 pessoas no andar 2.
+Deixei 1 pessoas no andar 1.
+Deixei 3 pessoas no andar 0.
+Vou para: 5
+Deixei 1 pessoas no andar 6.
+Deixei 1 pessoas no andar 4.
+Deixei 1 pessoas no andar 6.
+Deixei 1 pessoas no andar 3.
+Deixei 2 pessoas no andar 8.
+Deixei 1 pessoas no andar 1.
+Deixei 1 pessoas no andar 9.
+Deixei 1 pessoas no andar 0.
+Deixei 1 pessoas no andar 10.
+Deixei 3 pessoas no andar 13.
+Deixei 1 pessoas no andar 15.
+Deixei 1 pessoas no andar 18.
+Vou para: 16
+Deixei 2 pessoas no andar 18.
+Deixei 1 pessoas no andar 13.
+Deixei 1 pessoas no andar 10.
+Deixei 1 pessoas no andar 9.
+Deixei 1 pessoas no andar 6.
+Deixei 1 pessoas no andar 2.
+Deixei 2 pessoas no andar 1.
+Deixei 1 pessoas no andar 0.
+Vou para: 1
 Deixei 15 pessoas no andar -1.

@@ -12,7 +12,6 @@ char* NAME_OF_FILE(char str[20], int x) {
 	return str;
 }
 
-
 int main(int argc, char *argv[]) {
 	char str[20];
 	int onScreen, fileNumber;

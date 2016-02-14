@@ -5,15 +5,17 @@
 #include "elevator.h"
 
 int N = 0; int M = 0; int C = 0; int finishedInputs = 0; req *floorsReqs = (req *) NULL;
-pthread_mutex_t floorsMutex[MAX_ELEVATORS];
-FILE *fElevators[MAX_ELEVATORS];
+
+int isInRange(int n, int i, int f) {
+    return n >= i && n <= f;
+}
 
 void initQueue(queue *q) {
     q->size = 0;
 }
 
 void insertQ(queue *q, int val) {
-    if (q->size + 1 < MAX_CAPACITY) {
+    if (q->size + 1 < MAX_PEOPLE) {
         q->array[q->size] = val;
         q->size++;
     }
@@ -53,8 +55,9 @@ int removeQ(queue *q) {
 int getFloorFree(int id, int testFloor) {
     int i = 0, found = 0, size1, size2, result;
     if (TAG_DEBUG) printf("(%d) iniciando nova busca\n", id);
-    while ((testFloor + i < N || testFloor - i > 0) && !found) {
-        if (!i) {
+    found = 0;
+    while ((isInRange(testFloor + i, 0, N) || isInRange(testFloor - i, 0, N)) && !found) {
+        if (!i && isInRange(testFloor + i, 0, N)) {
             if (TAG_DEBUG) printf("(%d) Gettin lock of: %d\n", id, testFloor);
             pthread_mutex_lock(&floorsMutex[testFloor]);
             if (!floorsReqs[testFloor].inUse && floorsReqs[testFloor].size > 0) {
@@ -68,20 +71,21 @@ int getFloorFree(int id, int testFloor) {
         else {
             size1 = 0;
             size2 = 0;
-            if (testFloor + i < N) {
+            if (isInRange(testFloor + i, 0, N)) {
                 if (TAG_DEBUG) printf("(%d) :Gettin lock of: %d\n", id, testFloor + i);
                 pthread_mutex_lock(&floorsMutex[testFloor + i]);
                 if (!floorsReqs[testFloor + i].inUse) {
                     size1 = floorsReqs[testFloor + i].size;
                 }
             }
-            if (testFloor - i > 0) {
+            if (isInRange(testFloor - i, 0, N)) {
                 if (TAG_DEBUG) printf("(%d) /Gettin lock of: %d\n", id, testFloor - i);
                 pthread_mutex_lock(&floorsMutex[testFloor - i]);
                 if (!floorsReqs[testFloor - i].inUse) {
                     size2 = floorsReqs[testFloor - i].size;
                 }
             }
+            if (TAG_DEBUG) printf("(%d) %d > %d?\n", id, size1, size2);
             if (size1 > size2) {
                 found = 1;
                 result = testFloor + i;
@@ -94,11 +98,11 @@ int getFloorFree(int id, int testFloor) {
                     floorsReqs[result].inUse = 1;
                 }
             }
-            if (testFloor - i > 0) {
+            if (isInRange(testFloor - i, 0, N)) {
                 pthread_mutex_unlock(&floorsMutex[testFloor - i]);
                 if (TAG_DEBUG) printf("(%d) /Dropped lock of: %d\n", id, testFloor - i);
             }
-            if (testFloor + i < N) {
+            if (isInRange(testFloor + i, 0, N)) {
                 pthread_mutex_unlock(&floorsMutex[testFloor + i]);
                 if (TAG_DEBUG) printf("(%d) :Dropped lock of: %d\n", id, testFloor + i);
             }
@@ -107,13 +111,15 @@ int getFloorFree(int id, int testFloor) {
         }
         i++;
     }
-    if (!found)
+    if (!found) {
+        if (TAG_DEBUG) printf("(%d) Not found.\n", id);
         testFloor = -1;
+    }
     return testFloor;
 }
 
-void closerSort(int teste[MAX_CAPACITY], int lenght, int start) {
-    int i, j, aux, distance[MAX_CAPACITY];
+void closerSort(int teste[MAX_PEOPLE], int lenght, int start) {
+    int i, j, aux, distance[MAX_PEOPLE];
     for (i = 0; i < lenght; i++)
         distance[i] = abs(teste[i] - start);
     for (i = lenght - 1; i >= 0; i--) {
@@ -131,20 +137,23 @@ void closerSort(int teste[MAX_CAPACITY], int lenght, int start) {
 }
 
 void* elevator(void* args) {
+    FILE *fElevator;
     params *p;
-    int targetFloor, path[MAX_CAPACITY], i, j;
-    char buffer[30];
+    int targetFloor, path[MAX_PEOPLE], i, j;
+    char buffer[40];
 
     p = (params *) args;
 
     printf("Thread: %d\tFloor: %d\n", p->id, p->floor);
-    targetFloor = getFloorFree(p->id, p->floor);
 
-    snprintf(buffer, sizeof(char) * 30, "outputs/elevator%d.txt", p->id);
-    fElevators[p->id] = fopen(buffer, "w+");
+    snprintf(buffer, sizeof(char) * 40, "outputs/elevator%d.txt", p->id);
+    fElevator = fopen(buffer, "w+");
+    fprintf(fElevator, "%s\n", buffer);
+    printf("(%d) começar sa porra\n", p->id);
+    targetFloor = getFloorFree(p->id, p->floor);
     while (targetFloor != -1 || !finishedInputs) {
         if (targetFloor != -1) {
-            fprintf(fElevators[p->id], "Vou para: %d\n", targetFloor);
+            fprintf(fElevator, "Vou para: %d\n", targetFloor);
             while (p->capacity < C && floorsReqs[targetFloor].size > 0) {
                 floorsReqs[targetFloor].size--;
                 path[p->capacity] = removeQ(&floorsReqs[targetFloor].people);
@@ -156,7 +165,7 @@ void* elevator(void* args) {
             pthread_mutex_unlock(&floorsMutex[targetFloor]);
             if (TAG_DEBUG) printf("(%d) -Dropped lock of: %d\n", p->id, targetFloor);
 
-            closerSort( path, p->capacity, targetFloor);
+            closerSort(path, p->capacity, targetFloor);
 
             if (TAG_DEBUG) { for (i = 0; i < p->capacity; i++) printf("%d ", path[i]); printf("\n"); }
 
@@ -169,14 +178,16 @@ void* elevator(void* args) {
                     }
                     i++;
                 }
-                fprintf(fElevators[p->id],"Deixei %d pessoas no andar %d.\n", i, p->floor);
+                fprintf(fElevator, "Deixei %d pessoas no andar %d.\n", i, p->floor);
                 p->capacity -= i;
             }
         }
         targetFloor = getFloorFree(p->id, p->floor);
     }
     printf("(%d) acabou né\n", p->id);
+
+    fclose(fElevator);
     free(p);
-    fclose(fElevators[p->id]);
+
     pthread_exit(NULL);
 }

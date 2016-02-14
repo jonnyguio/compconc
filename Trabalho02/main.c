@@ -4,34 +4,36 @@
 #include "elevator.h"
 
 pthread_t threads[MAX_ELEVATORS];
+pthread_mutex_t floorsMutex[MAX_ELEVATORS];
 
 void init(int N, int M, int C, int floors[MAX_ELEVATORS]) {
     int i;
     params *a;
     for (i = 0; i < M; i++) {
-        a = malloc(sizeof(params));
+        a = (params *) malloc(sizeof(params));
         a->id = i;
         a->floor = floors[i];
         a->capacity = 0;
         pthread_create(&threads[i], NULL, elevator, (void *) a);
-        printf("%d\n", a->floor);
+        //printf("%d ", a->floor);
     }
 }
 
 int main(int argc, char const *argv[]) {
 
     FILE *arq;
-    int floors[MAX_ELEVATORS], i, j, peopleOnFloor, valorLouco, inputFileNumber;
-    char buffer[10];
+    int elevatorsFloors[MAX_ELEVATORS], i, j, peopleOnFloor, valorLouco, inputFileNumber;
+    char buffer[20];
 
     if (argc < 2) {
         printf("Usage: <input file number>\n");
         return 4;
     }
-    inputFileNumber = atoi(argv[1]) | 1;
+    inputFileNumber = atoi(argv[1]);
 
-    snprintf(buffer, sizeof(char) * 10, "%d.in", inputFileNumber);
+    snprintf(buffer, sizeof(char) * 20, "inputs/%d.in", inputFileNumber);
     arq = fopen(buffer, "r+");
+    printf("%s\n", buffer);
 
     if (!arq) {
         printf("Error. File not found.\n");
@@ -52,8 +54,10 @@ int main(int argc, char const *argv[]) {
         return 1;
     }
 
+    printf("Floors: %d\tElevators: %d\tCapacity: %d\n", N, M, C);
+
     for (i = 0; i < M; i++) {
-        fscanf(arq, "%d", &floors[i]);
+        fscanf(arq, "%d", &elevatorsFloors[i]);
     }
 
     floorsReqs = (req *) malloc(sizeof(int *) * N);
@@ -63,22 +67,23 @@ int main(int argc, char const *argv[]) {
     }
 
     for (i = 0; i < N; i++) {
-        printf("%p\n", &floorsMutex[i]);
+        if (TAG_DEBUG) printf("%p\n", &floorsMutex[i]);
         pthread_mutex_init(&floorsMutex[i], NULL);
     }
 
-    init(N, M, C, floors);
+    init(N, M, C, elevatorsFloors);
 
     for (i = 0; i < N; i++) {
         pthread_mutex_lock(&floorsMutex[i]);
         fscanf(arq, "%d", &peopleOnFloor);
-        printf("PeopleOnFloor(%d): %d\n", i, peopleOnFloor);
+        if (TAG_DEBUG) printf("PeopleOnFloor(%d): %d\n", i, peopleOnFloor);
         floorsReqs[i].size = peopleOnFloor;
         initQueue(&floorsReqs[i].people);
         for (j = 0; j < peopleOnFloor; j++) {
             fscanf(arq, "%d", &valorLouco);
             insertQ(&floorsReqs[i].people, valorLouco);
         }
+        if (TAG_DEBUG) printQueue(&floorsReqs[i].people);
         pthread_mutex_unlock(&floorsMutex[i]);
     }
 
