@@ -8,10 +8,12 @@ int N = 0; int M = 0; int C = 0; int finishedInputs = 0;
 
 pthread_mutex_t teste;
 
+// FUNÇÃO SIMPLES PARA SE NUMERO ESTA DENTRO DE UM RANGE
 int isInRange(int n, int i, int f) {
     return n >= i && n <= f;
 }
 
+// FUNÇÃO DE INSERÇÃO NA FILA
 void insertQ(req *q, int val) {
     if (q->size + 1 < MAX_PEOPLE) {
         q->people[q->size] = val;
@@ -22,6 +24,7 @@ void insertQ(req *q, int val) {
     }
 }
 
+// FUNÇÃO DE IMPRESSÃO DA FILA
 void printQueue(req *q) {
     int i;
     for (i = 0; i < q->size; i++) {
@@ -30,6 +33,7 @@ void printQueue(req *q) {
     printf("\n");
 }
 
+// REARRUMA A FILA APÓS UMA RETIRADA
 void reorder(req *q) {
     int i = 0;
     for (i = 0; i < q->size; i++) {
@@ -37,6 +41,7 @@ void reorder(req *q) {
     }
 }
 
+// REMOVE O TOPO DA FILA (SENÃO RETORNA -1)
 int removeQ(req *q) {
     int val;
     if (q->size > 0) {
@@ -51,14 +56,19 @@ int removeQ(req *q) {
     return val;
 }
 
+// FUNÇÃO FEITA PARA PEGAR QUAL O PRÓXIMO ANDAR QUE O ELEVADOR DEVE IR
 int getFloorFree(int id, int testFloor) {
     int i = 0, found = 0, size1, size2, result;
     if (TAG_DEBUG) printf("(%d) iniciando nova busca\n", id);
     found = 0;
+
+    // Enquanto não encontrar, ou ainda tiver andares a serem procurados
     while ((isInRange(testFloor + i, 0, N - 1) || isInRange(testFloor - i, 0, N - 1)) && !found) {
+        // Checa o próprio andar
         if (!i && isInRange(testFloor + i, 0, N - 1)) {
             if (TAG_DEBUG) printf("(%d) Gettin lock of: %d\n", id, testFloor);
-            pthread_mutex_lock(&floorsMutex[testFloor]);
+
+            pthread_mutex_lock(&floorsMutex[testFloor]); // pega o mutex para acessar varíavel (inUse) por exclusão mutua
             if (!floorsReqs[testFloor].inUse && floorsReqs[testFloor].size > 0) {
                 if (TAG_DEBUG) printf("size%d: %d\n",testFloor, floorsReqs[testFloor].size);
                 floorsReqs[testFloor].inUse = 1;
@@ -68,6 +78,8 @@ int getFloorFree(int id, int testFloor) {
             if (TAG_DEBUG) printf("(%d) Dropped lock of: %d\n", id, testFloor);
         }
         else {
+            // Nessa parte, a função checa os andares acima e abaixo do elevador (se elas existem)
+            // Assim, ele seleciona a que não possue elevador lá e que possui + pessoas esperando
             size1 = 0;
             size2 = 0;
             if (isInRange(testFloor + i, 0, N - 1)) {
@@ -111,12 +123,14 @@ int getFloorFree(int id, int testFloor) {
         i++;
     }
     if (!found) {
+        // Se não achou, força resultado para "-1"
         if (TAG_DEBUG) printf("(%d) Not found.\n", id);
         testFloor = -1;
     }
     return testFloor;
 }
 
+// Bubble sort, porém baseado na distância de um numero (no caso, do numer 'start')
 void closerSort(int teste[MAX_PEOPLE], int lenght, int start) {
     int i, j, aux, distance[MAX_PEOPLE];
     for (i = 0; i < lenght; i++)
@@ -135,6 +149,7 @@ void closerSort(int teste[MAX_PEOPLE], int lenght, int start) {
     }
 }
 
+// Função da thread
 void* elevator(void* args) {
 
     FILE *fElevator;
@@ -147,11 +162,12 @@ void* elevator(void* args) {
 
     printf("Thread: %d\tFloor: %d\n", p->id, p->f);
 
+    // Inicialização de arquivos
     sn = snprintf(buffer, sizeof(char) * 41, "outputs/elevator%d.txt", p->id);
     fElevator = fopen(buffer, "w");
     fprintf(fElevator, "%s\n", buffer);
 
-    if (TAG_DEBUG) printf("(%d) começar sa porra\n", p->id);
+    if (TAG_DEBUG) printf("(%d) começar sa borra\n", p->id);
 
     targetFloor = getFloorFree(p->id, p->f);
     while (targetFloor != -1 || !finishedInputs) {
